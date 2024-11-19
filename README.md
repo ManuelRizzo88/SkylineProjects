@@ -17,3 +17,7 @@ Crea e invia fatture personalizzate ai tuoi clienti per i progetti completati o 
 
 ### 📊 Reportistica Dettagliata
 Genera report sui progetti completati, sul totale delle ore lavorate e sui guadagni generati per prendere decisioni informate sul tuo lavoro.
+
+
+
+SukaTori Dreams Developing Team©
