@@ -65,3 +65,21 @@ body:not(.dark-theme) .custom-navbar {
     opacity: 0.8;
     transition: 0.3s ease-in-out;
 }
+
+.btn-nav
+{
+    color: white; /* Testo bianco */
+    background-color: transparent; /* Sfondo trasparente per integrarsi */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn
+{
+    background-color: #212529;
+}
+
+.bg-menu
+{
+    background-color: #212529;
+    color:white;
+}
