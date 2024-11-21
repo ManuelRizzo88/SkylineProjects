@@ -7,7 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- AwesomeFonts -->
     <link href="../css/styleHome.css" rel="stylesheet">
     <title>SkylineProject | Home</title>
-    
 </head>
 <body>
     <nav class="navbar navbar-expand-lg custom-navbar">
@@ -33,20 +32,20 @@
                     <button class="btn btn-nav mx-1" type="button">About</button>
                     <button class="btn btn-nav mx-1" type="button">Services</button>
                     <button class="btn btn-nav mx-1" type="button">Contact</button>
-                    <div class="dropdown show">
-                        <a class="btn-nav btn btn-lg dropdown-toggle mx-1" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="dropdown">
+                        <button class="btn btn-nav dropdown-toggle mx-1" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                             Entra
-                        </a>
-                        <div class="dropdown-menu bg-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="login.html">Accedi</a>
-                            <a class="dropdown-item" href="signup.html">Registrati</a>
-                        </div>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="login.html">Accedi</a></li>
+                            <li><a class="dropdown-item" href="signup.html">Registrati</a></li>
+                        </ul>
                     </div>
-                    
                 </div>
             </div>
         </div>
     </nav>    
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
