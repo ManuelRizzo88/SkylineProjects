@@ -18,3 +18,20 @@ themeSwitcher.addEventListener('click', () => {
         themeIcon.classList.replace('fa-sun', 'fa-moon');
     }
 });
+
+
+const dropdownButton = document.querySelector('#dropdownMenuLink');
+
+// Aggiungi un evento di click per cambiare la classe dell'icona
+dropdownButton.addEventListener('click', function() {
+    const icon = dropdownButton.querySelector('i');  // Seleziona l'icona all'interno del bottone
+    
+    // Controlla se l'icona è quella di freccia giù e cambia la classe
+    if (icon.classList.contains('fa-caret-down')) {
+        icon.classList.remove('fa-caret-down');  // Rimuove la freccia giù
+        icon.classList.add('fa-caret-up');  // Aggiunge la freccia su
+    } else {
+        icon.classList.remove('fa-caret-up');  // Rimuove la freccia su
+        icon.classList.add('fa-caret-down');  // Aggiunge la freccia giù
+    }
+});
