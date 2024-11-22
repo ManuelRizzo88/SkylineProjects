@@ -9,7 +9,7 @@ body.dark-theme a {
 }
 
 body.dark-theme button {
-    background-color: #057989 !important; /* Bottoni scuri */
+    background-color: #057989; /* Bottoni scuri */
     color: #ffffff !important;
 }
 
@@ -24,7 +24,7 @@ body:not(.dark-theme) a {
 }
 
 body:not(.dark-theme) button {
-    background-color: #e9ecef !important; /* Bottoni chiari */
+    background-color: #e9ecef; /* Bottoni chiari */
     color: #212529 !important;
 }
 
@@ -54,31 +54,47 @@ body:not(.dark-theme) .custom-navbar {
 /* Pulsanti */
 .btn-theme, .btn-nav {
     background-color: transparent !important; /* Nessuno sfondo */
-    border: 2px solid transparent !important; /* Bordo trasparente di default */
+    border: none !important; /* Rimuove il bordo */
     color: inherit !important; /* Ereditare il colore del tema */
     font-size: 1rem !important;
     padding: 10px 15px !important;
-    transition: border 0.3s ease, box-shadow 0.3s ease !important;
+    position: relative; /* Necessario per ::after */
+    transition: color 0.3s ease-in-out !important;
 }
 
-.btn-theme:hover, .btn-nav:hover {
-    border-color: #4dabf7 !important; /* Colore del bordo al passaggio del mouse */
-    box-shadow: 0px 0px 8px #4dabf7 !important; /* Effetto luce sul bordo */
-    color: #ffffff !important;
+/* Effetto luce sotto */
+.btn-theme::after, .btn-nav::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 80%; /* Larghezza della linea */
+    height: 3px; /* Spessore della linea */
+    background-color: transparent; /* Linea invisibile di default */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 0px 8px transparent; /* Nessun effetto iniziale */
 }
 
-/* Pulsante attivo */
-.btn-nav.active {
-    border-color: #4dabf7 !important; /* Evidenziare il pulsante attivo */
+.btn-theme:hover::after, .btn-nav:hover::after {
+    background-color: #4dabf7; /* Colore del bordo sotto */
+    box-shadow: 0px 0px 8px #4dabf7; /* Effetto luce */
+}
+
+/* Pulsante attivo con linea fissa */
+.btn-nav.active::after {
+    background-color: #4dabf7 !important; /* Linea fissa */
+    box-shadow: 0px 0px 8px #4dabf7 !important;
 }
 
 /* Dropdown personalizzato */
 .dropdown-menu {
-    color:white;
+    
+    color: white !important;
     background-color: #212529 !important; /* Sfondo dropdown scuro */
     border: 2px solid #4dabf7 !important; /* Bordo dropdown */
     box-shadow: 0px 0px 8px #4dabf7 !important; /* Effetto luce */
     padding: 10px 0 !important;
+    z-index: 1000; /* Evitare sovrapposizioni indesiderate */
 }
 
 body:not(.dark-theme) .dropdown-menu {
@@ -86,27 +102,29 @@ body:not(.dark-theme) .dropdown-menu {
     border: 2px solid #007bff !important; /* Bordo chiaro */
 }
 
-nav .dropdown-item {
+.dropdown-item {
     padding: 10px 20px !important;
     color: #ffffff !important;
     text-decoration: none !important;
-    transition: background-color 0.3s ease-in-out !important;
+    transition: background-color 0.3s ease-in-out, border 0.3s ease-in-out !important;
 }
 
 body:not(.dark-theme) .dropdown-item {
     color: #212529 !important;
 }
 
+/* Hover dropdown */
 .dropdown-item:hover {
-    background-color: #057989 !important;
+    background-color: #212529 !important;
+    border-bottom: 3px solid #057989 !important;
     color: #e4b320 !important; /* Colore al passaggio del mouse */
 }
 
+/* Dropdown voci */
 .dropdown-menu li a {
-    color: white !important; 
+    color: white !important;
 }
 
-#navbarButtons
-{
+#navbarButtons {
     margin-right: 20px;
 }
