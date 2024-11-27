@@ -1,43 +1,43 @@
 /* Tema scuro (default) */
 body.dark-theme {
-    background-color: #074e64 !important; /* Sfondo scuro */
-    color: #ffffff !important; /* Testo chiaro */
+    background-color: #19647E !important; /* Sfondo scuro */
+    color: #F4D35E !important; /* Testo chiaro */
 }
 
 body.dark-theme a {
-    color: #4dabf7 !important; /* Link chiari */
+    color: #28AFB0 !important; /* Link chiari */
 }
 
 body.dark-theme button {
-    background-color: #057989; /* Bottoni scuri */
-    color: #ffffff !important;
+    background-color: #1F271B; /* Bottoni scuri */
+    color: #F4D35E !important;
 }
 
 /* Tema chiaro */
 body:not(.dark-theme) {
-    background-color: #f5f5f5 !important; /* Sfondo chiaro */
-    color: #212529 !important; /* Testo scuro */
+    background-color: #FFFFFF !important; /* Sfondo chiaro */
+    color: #1F271B !important; /* Testo scuro */
 }
 
 body:not(.dark-theme) a {
-    color: #007bff !important; /* Link blu scuro */
+    color: #EE964B !important; /* Link arancioni */
 }
 
 body:not(.dark-theme) button {
-    background-color: #e9ecef; /* Bottoni chiari */
-    color: #212529 !important;
+    background-color: #EE964B; /* Bottoni chiari */
+    color: #1F271B !important;
 }
 
 /* Navbar personalizzata */
 .custom-navbar {
-    background-color: rgba(12, 12, 12, 0.705) !important; /* Sfondo scuro trasparente */
-    color: #ffffff !important;
+    background-color: rgba(31, 39, 27, 0.7) !important; /* Sfondo scuro trasparente */
+    color: #F4D35E !important;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
 body:not(.dark-theme) .custom-navbar {
-    background-color: rgb(255, 255, 255) !important; /* Sfondo chiaro trasparente */
-    color: #212529 !important;
+    background-color: rgba(255, 255, 255, 0.8) !important; /* Sfondo chiaro trasparente */
+    color: #1F271B !important;
 }
 
 .custom-navbar .navbar-brand img {
@@ -76,55 +76,99 @@ body:not(.dark-theme) .custom-navbar {
 }
 
 .btn-theme:hover::after, .btn-nav:hover::after {
-    background-color: #4dabf7; /* Colore del bordo sotto */
-    box-shadow: 0px 0px 8px #4dabf7; /* Effetto luce */
+    background-color: #28AFB0; /* Colore del bordo sotto */
+    box-shadow: 0px 0px 8px #28AFB0; /* Effetto luce */
 }
 
 /* Pulsante attivo con linea fissa */
 .btn-nav.active::after {
-    background-color: #4dabf7 !important; /* Linea fissa */
-    box-shadow: 0px 0px 8px #4dabf7 !important;
+    background-color: #28AFB0 !important; /* Linea fissa */
+    box-shadow: 0px 0px 8px #28AFB0 !important;
 }
 
 /* Dropdown personalizzato */
 .dropdown-menu {
-    
-    color: white !important;
-    background-color: #212529 !important; /* Sfondo dropdown scuro */
-    border: 2px solid #4dabf7 !important; /* Bordo dropdown */
-    box-shadow: 0px 0px 8px #4dabf7 !important; /* Effetto luce */
+    color: #F4D35E !important;
+    background-color: #1F271B !important; /* Sfondo dropdown scuro */
+    border: 2px solid #28AFB0 !important; /* Bordo dropdown */
+    box-shadow: 0px 0px 8px #28AFB0 !important; /* Effetto luce */
     padding: 10px 0 !important;
     z-index: 1000; /* Evitare sovrapposizioni indesiderate */
 }
 
 body:not(.dark-theme) .dropdown-menu {
-    background-color: #f5f5f5 !important; /* Sfondo chiaro dropdown */
-    border: 2px solid #007bff !important; /* Bordo chiaro */
+    background-color: #F4D35E !important; /* Sfondo chiaro dropdown */
+    border: 2px solid #EE964B !important; /* Bordo chiaro */
 }
 
 .dropdown-item {
+    position: relative; /* Necessario per ::after */
     padding: 10px 20px !important;
-    color: #ffffff !important;
+    color: #F4D35E !important;
     text-decoration: none !important;
-    transition: background-color 0.3s ease-in-out, border 0.3s ease-in-out !important;
+    transition: color 0.3s ease-in-out !important;
 }
 
 body:not(.dark-theme) .dropdown-item {
-    color: #212529 !important;
+    color: #1F271B !important;
 }
 
-/* Hover dropdown */
+/* Effetto luce sotto */
+.dropdown-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 80%; /* Larghezza della linea */
+    height: 3px; /* Spessore della linea */
+    background-color: transparent; /* Linea invisibile di default */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 0px 8px transparent; /* Nessun effetto iniziale */
+}
+
+.dropdown-item:hover::after {
+    background-color: #28AFB0; /* Colore del bordo sotto */
+    box-shadow: 0px 0px 8px #28AFB0; /* Effetto luce */
+}
+
 .dropdown-item:hover {
-    background-color: #212529 !important;
-    border-bottom: 3px solid #057989 !important;
-    color: #e4b320 !important; /* Colore al passaggio del mouse */
+    background-color: #1F271B !important;
+    color: #EE964B !important; /* Cambia colore al passaggio del mouse */
 }
 
 /* Dropdown voci */
 .dropdown-menu li a {
-    color: white !important;
+    color: #F4D35E !important;
 }
 
 #navbarButtons {
     margin-right: 20px;
+}
+
+/* Schermata di caricamento */
+#loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #19647E;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.5s ease-out; /* Transizione per scomparire */
+}
+
+/* Icona di caricamento */
+.loading-icon {
+    font-size: 50px;
+    color: #F4D35E;
+}
+
+/* Effetto di scomparsa della schermata di caricamento */
+.fade-out {
+    opacity: 0 !important;
+    pointer-events: none;
 }

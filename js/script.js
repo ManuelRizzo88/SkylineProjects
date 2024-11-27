@@ -35,3 +35,9 @@ dropdownButton.addEventListener('click', function() {
         icon.classList.add('fa-caret-down');  // Aggiunge la freccia giù
     }
 });
+
+window.addEventListener('load', function() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    // Aggiungi la classe per far sparire la schermata di caricamento
+    loadingScreen.classList.add('fade-out');
+});
