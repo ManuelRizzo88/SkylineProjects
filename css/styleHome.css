@@ -5,7 +5,7 @@ body.dark-theme {
 }
 
 body.dark-theme a {
-    color: #28AFB0 !important; /* Link chiari */
+    color: #28AFB0; /* Link chiari */
 }
 
 body.dark-theme button {
@@ -172,3 +172,104 @@ body:not(.dark-theme) .dropdown-item {
     opacity: 0 !important;
     pointer-events: none;
 }
+
+
+/* Footer */
+.custom-footer {
+    font-family: Arial, sans-serif;
+    color: #F4D35E; /* Testo */
+    background-color: #1F271B; /* Sfondo scuro */
+    padding: 20px 10px;
+    line-height: 1.5;
+}
+
+
+.custom-footer .footer-top {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 2px solid #28AFB0; /* Bordo separatore */
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.custom-footer .footer-section {
+    text-align: center;
+    flex: 1;
+    padding: 0 10px;
+}
+
+.custom-footer .footer-section h3 {
+    color: #28AFB0; /* Titoli */
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.custom-footer .footer-section p {
+    margin: 5px 0;
+}
+
+.custom-footer .footer-section a {
+    color: #EE964B; /* Link */
+    text-decoration: none;
+}
+
+.custom-footer .footer-section a:hover {
+    color: #F4D35E; /* Link */
+    text-decoration: none;
+}
+/* Footer Bottom */
+.custom-footer .footer-bottom {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.custom-footer .footer-column {
+    flex: 1;
+    padding: 10px 20px;
+    text-align: left;
+}
+
+.custom-footer .footer-column h4 {
+    color: #28AFB0;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.custom-footer .footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.custom-footer .footer-column ul li {
+    margin: 5px 0;
+}
+
+.custom-footer .footer-column ul li a {
+    color: #F4D35E;
+    text-decoration: none;
+}
+
+.custom-footer .footer-column ul li a:hover {
+    color: #EE964B;
+}
+
+/* Stile per fissare il footer */
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.main-content {
+    flex: 1; /* Si espande per occupare lo spazio disponibile */
+}
+
+.custom-footer {
+    flex-shrink: 0; /* Impedisce al footer di comprimersi */
+}
+
