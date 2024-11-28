@@ -183,6 +183,10 @@ body:not(.dark-theme) .dropdown-item {
     line-height: 1.5;
 }
 
+body:not(.dark-theme) .custom-footer {
+    background-color: rgba(209, 199, 199, 0.8) !important; /* Sfondo chiaro trasparente */
+    color: #1F271B !important;
+}
 
 .custom-footer .footer-top {
     display: flex;
