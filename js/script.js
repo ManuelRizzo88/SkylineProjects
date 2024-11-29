@@ -41,3 +41,41 @@ window.addEventListener('load', function() {
     // Aggiungi la classe per far sparire la schermata di caricamento
     loadingScreen.classList.add('fade-out');
 });
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const carouselContent = document.querySelector('.carousel-content');
+  
+    try {
+      // Chiamata API per ottenere i servizi
+      const response = await fetch('/services');
+      const services = await response.json();
+  
+      // Aggiungi ogni servizio come card
+      services.forEach(service => {
+        const card = document.createElement('div');
+        card.className = 'card';
+  
+        card.innerHTML = `
+          <img src="https://via.placeholder.com/200x120" alt="Img Servizio">
+          <h3>${service.titolo}</h3>
+          <p>${service.descrizione}</p>
+          <p class="price">€${service.prezzo}</p>
+        `;
+  
+        carouselContent.appendChild(card);
+      });
+    } catch (error) {
+      console.error('Errore nel caricamento dei servizi:', error);
+    }
+  });
+  
+  // Funzioni per scorrere
+  document.querySelector('.prev').addEventListener('click', () => {
+    document.querySelector('.carousel-content').scrollBy({ left: -220, behavior: 'smooth' });
+  });
+  
+  document.querySelector('.next').addEventListener('click', () => {
+    document.querySelector('.carousel-content').scrollBy({ left: 220, behavior: 'smooth' });
+  });
+  

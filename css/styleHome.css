@@ -7,12 +7,6 @@ body.dark-theme {
 body.dark-theme a {
     color: #28AFB0; /* Link chiari */
 }
-
-body.dark-theme button {
-    background-color: #1F271B; /* Bottoni scuri */
-    color: #F4D35E !important;
-}
-
 /* Tema chiaro */
 body:not(.dark-theme) {
     background-color: #FFFFFF !important; /* Sfondo chiaro */
@@ -277,3 +271,76 @@ body, html {
     flex-shrink: 0; /* Impedisce al footer di comprimersi */
 }
 
+.carousel {
+    margin-top:5%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+  
+  .carousel-content {
+    margin-left: 10%;
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    scroll-behavior: smooth;
+  }
+  
+  .card {
+    background-color: #f0f0f0;
+    color: #000;
+    border-radius: 10px;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+  }
+  
+  .card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  /* Stile per i pulsanti Prev e Next */
+.prev,
+.next {
+  position: absolute;
+  top: 50%; /* Centra verticalmente rispetto al contenitore */
+  transform: translateY(-50%);
+  background-color: transparent;
+  color: #fff; /* Colore del testo (o icone) */
+  border: none;
+  padding: 10px 15px; /* Spaziatura interna */
+  font-size: 30px; /* Dimensione del testo */
+  cursor: pointer;
+  z-index: 10; /* Assicurati che siano sopra gli altri elementi */
+  opacity: 0.8; /* Leggermente trasparente per un aspetto moderno */
+  transition: all 0.3s ease; /* Transizione fluida per hover */
+}
+
+/* Posizioni specifiche */
+.prev {
+  left: 10px; /* Distanza dal bordo sinistro */
+}
+
+.next {
+  right: 10px; /* Distanza dal bordo destro */
+}
+
+/* Effetto hover */
+.prev:hover,
+.next:hover {
+  opacity: 1; /* Rende il pulsante completamente opaco */
+  transform: translateY(-50%) scale(1.1); /* Leggero zoom per evidenziare */
+}
+
+/* Per dispositivi mobili */
+@media screen and (max-width: 768px) {
+  .prev,
+  .next {
+    font-size: 16px; /* Riduci la dimensione del testo */
+    padding: 8px 12px; /* Riduci la spaziatura */
+  }
+}
