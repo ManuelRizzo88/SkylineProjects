@@ -33,6 +33,35 @@ app.get("/services", async (req, res) => {
   }
 });
 
+// API per registrare un nuovo utente
+app.post("/signup", async (req, res) => {
+  const { name, surname, email, password } = req.body;
+
+  if (!name || !surname || !email || !password) {
+    return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
+  }
+
+  try {
+    // Controlla se l'utente esiste già
+    const userCheck = await pool.query("SELECT * FROM utente WHERE email = $1;", [email]);
+
+    if (userCheck.rows.length > 0) {
+      return res.status(409).json({ error: "Email già registrata" });
+    }
+
+    // Inserisci il nuovo utente
+    await pool.query(
+      "INSERT INTO utente (name, surname, email, password) VALUES ($1, $2, $3, $4);",
+      [name, surname, email, password]
+    );
+
+    res.status(201).json({ message: "Utente registrato con successo" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Errore del server" });
+  }
+});
+
 // Avvia il server
 app.listen(port, () => {
   console.log(`Server avviato su http://localhost:${port}`);
