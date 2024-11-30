@@ -289,78 +289,70 @@ html {
   flex-shrink: 0; /* Impedisce al footer di comprimersi */
 }
 
-.carousel {
-  margin-top: 5%;
-  width: 100%;
+.main-content {
   display: flex;
+  min-height: calc(100vh - 110px); /* Altezza totale meno Navbar e Footer */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  background-image: linear-gradient(#f4d35e, #19647e);
+  padding: 15px 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
+  align-items: flex-start;
 }
 
-.carousel-content {
-  margin-left: 10%;
+.sidebar-button {
+  width: 75%; /* Larghezza di partenza */
+  padding: 10px;
+  background-color: #28afb0;
+  color: #fff;
+  border: none;
+  border-radius: 0px 5px 5px 0px;
+  cursor: pointer;
+  text-align: center; /* Allinea il testo a sinistra */
+  font-size: 14px;
+  transition: width 0.3s ease; /* Transizione per l'effetto di allungamento */
+}
+
+.sidebar-button.active {
+  width: 85%; /* Larghezza massima per il pulsante attivo */
+  background-color: #ee964b; /* Colore viola per il pulsante attivo */
+  font-weight: bold; /* Testo in grassetto */
+}
+
+.sidebar-button:hover {
+  width: 85%; /* Si allunga fino alla dimensione massima */
+  background-color: #19647e; /* Colore viola in hover */
+}
+
+/* Dashboard principale */
+.dashboard {
+  flex: 1;
+  padding: 20px;
   display: flex;
-  overflow-x: auto;
+  flex-direction: column;
   gap: 20px;
-  scroll-behavior: smooth;
 }
 
-.card {
-  background-color: #f0f0f0;
-  color: #000;
+.graph {
+  flex: 1;
+  background-color: #bbb;
   border-radius: 10px;
   padding: 20px;
-  width: 200px;
   text-align: center;
+  font-size: 18px;
+  color: #000;
 }
 
-.card img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
+.black-box {
+  flex: 1;
+  background-color: #000;
   border-radius: 10px;
-}
-
-/* Stile per i pulsanti Prev e Next */
-.prev,
-.next {
-  position: absolute;
-  top: 50%; /* Centra verticalmente rispetto al contenitore */
-  transform: translateY(-50%);
-  background-color: transparent;
-  color: #fff; /* Colore del testo (o icone) */
-  border: none;
-  padding: 10px 15px; /* Spaziatura interna */
-  font-size: 30px; /* Dimensione del testo */
-  cursor: pointer;
-  z-index: 10; /* Assicurati che siano sopra gli altri elementi */
-  opacity: 0.8; /* Leggermente trasparente per un aspetto moderno */
-  transition: all 0.3s ease; /* Transizione fluida per hover */
-}
-
-/* Posizioni specifiche */
-.prev {
-  left: 10px; /* Distanza dal bordo sinistro */
-}
-
-.next {
-  right: 10px; /* Distanza dal bordo destro */
-}
-
-/* Effetto hover */
-.prev:hover,
-.next:hover {
-  opacity: 1; /* Rende il pulsante completamente opaco */
-  transform: translateY(-50%) scale(1.1); /* Leggero zoom per evidenziare */
-}
-
-/* Per dispositivi mobili */
-@media screen and (max-width: 768px) {
-  .prev,
-  .next {
-    font-size: 16px; /* Riduci la dimensione del testo */
-    padding: 8px 12px; /* Riduci la spaziatura */
-  }
 }
 
 /* Stile Scrollbar - Tema scuro */
