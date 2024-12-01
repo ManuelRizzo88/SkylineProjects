@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.className = "card";
 
       card.innerHTML = `
-        <div class="card-img" style="background-image: url('https://via.placeholder.com/200x120');"></div>
+        <div class="card-img" style="background-image: url('${service.imageurl}');"></div>
         <div class="card-info">
           <p class="text-title">${service.titolo}</p>
           <p class="text-body">${service.descrizione}</p>
@@ -101,17 +101,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
 
   if (isAuthenticated) {
-      // Crea il pulsante Dashboard
-      const dashboardButton = document.createElement("button");
-      dashboardButton.className = "btn btn-nav mx-1";
-      dashboardButton.type = "button";
-      dashboardButton.textContent = "Dashboard";
-      dashboardButton.onclick = () => {
-          window.location.href = "dashboard.html";
-      };
+    // Crea il pulsante Dashboard
+    const dashboardButton = document.createElement("button");
+    dashboardButton.className = "btn btn-nav mx-1";
+    dashboardButton.type = "button";
+    dashboardButton.textContent = "Dashboard";
+    dashboardButton.onclick = () => {
+      window.location.href = "dashboard.html";
+    };
 
-      // Aggiungi il pulsante Dashboard alla navbar
-      navbarDynamicContent.appendChild(dashboardButton);
+    // Aggiungi il pulsante Dashboard alla navbar
+    navbarDynamicContent.appendChild(dashboardButton);
   }
 });
 

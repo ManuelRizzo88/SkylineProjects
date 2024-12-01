@@ -289,6 +289,14 @@ html {
   flex-shrink: 0; /* Impedisce al footer di comprimersi */
 }
 
+.img-footer
+{
+  width: 40%; 
+  border-radius: 70%;
+  background-color: #fff;
+
+}
+
 .carousel {
   margin-top: 5%;
   width: 100%;
@@ -307,8 +315,8 @@ html {
 
 /* From Uiverse.io by alexruix */
 .card {
-  width: 190px;
-  height: 254px;
+  width: 300px;
+  height: 400px;
   padding: 0.8em;
   background: #f5f5f5;
   position: relative;
@@ -317,11 +325,13 @@ html {
 }
 
 .card-img {
-  background-color: #d66e28;
-  height: 50%;
+  height: 70%;
   width: 100%;
   border-radius: 0.5rem;
   transition: 0.3s ease;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .card-info {
@@ -366,7 +376,6 @@ svg {
 
 /*Hover*/
 .card-img:hover {
-  transform: translateY(-25%);
   box-shadow: rgba(226, 196, 63, 0.25) 0px 13px 47px -5px,
     rgba(180, 71, 71, 0.3) 0px 8px 16px -8px;
 }
