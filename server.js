@@ -62,6 +62,28 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+app.get('/vendite-mensili/:venditoreId', async (req, res) => {
+  const venditoreId = req.params.venditoreId;
+
+  try {
+    const query = `
+      SELECT 
+        DATE_TRUNC('month', ordine.concluso) AS mese,
+        COUNT(ordine.idordine) AS numero_ordini,
+        SUM(ordine.prezzo) AS totale_vendite
+      FROM ordine
+      WHERE ordine.idvenditore = $1
+      GROUP BY mese
+      ORDER BY mese;
+    `;
+    const { rows } = await pool.query(query, [venditoreId]);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Errore del server');
+  }
+});
+
 // Avvia il server
 app.listen(port, () => {
   console.log(`Server avviato su http://localhost:${port}`);
