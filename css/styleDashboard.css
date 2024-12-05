@@ -1,6 +1,6 @@
 /* Tema scuro (default) */
 body.dark-theme {
-  background-color: #19647e !important; /* Sfondo scuro */
+  background-image: linear-gradient(#19647E,#28AFB0);
   color: #f4d35e !important; /* Testo chiaro */
 }
 
@@ -297,7 +297,7 @@ html {
 /* Sidebar */
 .sidebar {
   width: 300px;
-  background-image: linear-gradient(#f4d35e, #19647e);
+  background-color: transparent;
   padding: 15px 0;
   display: flex;
   flex-direction: column;

@@ -1,7 +1,7 @@
 /* Tema scuro (default) */
 body.dark-theme {
-  background-color: #19647e !important; /* Sfondo scuro */
-  color: #f4d35e !important; /* Testo chiaro */
+    background-image: linear-gradient(#19647E,#28AFB0);
+    color: #f4d35e !important; /* Testo chiaro */
 }
 
 body.dark-theme a {
