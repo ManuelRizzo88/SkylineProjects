@@ -530,49 +530,36 @@ body:not(.dark-theme) {
 .hero-image {
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 500px;
   background: url("../img/skyline.jpg") center/cover no-repeat;
   margin-bottom: 4%;
-  -webkit-mask-image:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0)); 
+  -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)));
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
 }
 
-/* Sfumatura alla base */
-.hero-image::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100px; /* Altezza dell'effetto sfumatura */
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
-  pointer-events: none;
-}
-
-.fade-bottom-overlay {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* Wrapper per i testi */
+.hero-content {
+  position: absolute; /* Sopra l'immagine */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
   color: white;
+  z-index: 10; /* Assicura che sia visibile sopra l'immagine */
 }
 
-
-
 .hero-title {
-  font-size: 3rem;
+  font-size: 4rem; /* Testo più grande */
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* Spazio tra il titolo e il carousel */
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8); /* Ombra per leggibilità */
 }
 
 .hero-text-carousel {
   position: relative;
-  height: 2rem; /* Adjust height to fit text */
+  height: 3rem; /* Altezza maggiore per il carousel */
   overflow: hidden;
+  text-align: center;
 }
 
 .hero-text {
@@ -580,6 +567,8 @@ body:not(.dark-theme) {
   top: 0;
   left: 0;
   width: 100%;
+  font-size: 1.8rem; /* Testo animato più grande */
+  font-weight: 500;
   opacity: 0;
   animation: slideText 12s infinite;
 }
