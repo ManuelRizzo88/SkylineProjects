@@ -571,3 +571,10 @@
         font-size: 1.2rem;
         color: #007bff;
     }
+
+    .divider {
+        width: 90%;
+        height: 2px;
+        background-color: #ee964b;
+        margin: auto;
+      }

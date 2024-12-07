@@ -521,7 +521,6 @@ body:not(.dark-theme) {
   background-color: #ee964b;
   margin: auto;
 }
-
 .hero-section {
   position: relative;
   overflow: hidden;
@@ -537,29 +536,29 @@ body:not(.dark-theme) {
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
 }
 
-/* Wrapper per i testi */
 .hero-content {
-  position: absolute; /* Sopra l'immagine */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+  position: absolute; /* Centra sopra l'immagine */
+  top: 50%; /* Posizionamento verticale */
+  left: 50%; /* Posizionamento orizzontale */
+  transform: translate(-50%, -50%); /* Centra perfettamente */
+  text-align: center; /* Allinea al centro il testo */
   color: white;
-  z-index: 10; /* Assicura che sia visibile sopra l'immagine */
+  z-index: 10; /* Porta sopra l'immagine */
 }
 
 .hero-title {
-  font-size: 4rem; /* Testo più grande */
+  font-size: 4rem; /* Grandezza del titolo */
   font-weight: bold;
-  margin-bottom: 20px; /* Spazio tra il titolo e il carousel */
+  margin: 0; /* Nessun margine */
+  text-align: center;
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8); /* Ombra per leggibilità */
 }
 
 .hero-text-carousel {
+  margin-top: 20px; /* Spazio sotto il titolo */
   position: relative;
-  height: 3rem; /* Altezza maggiore per il carousel */
+  height: 3rem; /* Altezza del contenitore */
   overflow: hidden;
-  text-align: center;
 }
 
 .hero-text {
@@ -567,7 +566,7 @@ body:not(.dark-theme) {
   top: 0;
   left: 0;
   width: 100%;
-  font-size: 1.8rem; /* Testo animato più grande */
+  font-size: 2rem; /* Grandezza del testo animato */
   font-weight: 500;
   opacity: 0;
   animation: slideText 12s infinite;
