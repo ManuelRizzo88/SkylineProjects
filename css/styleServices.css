@@ -1,0 +1,580 @@
+    /* Tema scuro (default) */
+    body.dark-theme {
+        background-image: linear-gradient(#19647E,#28AFB0); /* Sfondo scuro */
+        color: #f4d35e !important; /* Testo chiaro */
+        }
+    
+        body.dark-theme a {
+        color: #28afb0; /* Link chiari */
+        }
+        /* Tema chiaro */
+        body:not(.dark-theme) {
+        background-color: #ffffff !important; /* Sfondo chiaro */
+        color: #1f271b !important; /* Testo scuro */
+        }
+    
+        body:not(.dark-theme) a {
+        color: #ee964b !important; /* Link arancioni */
+        }
+    
+        body:not(.dark-theme) button {
+        background-color: #ee964b; /* Bottoni chiari */
+        color: #1f271b !important;
+        }
+    
+        /* Navbar personalizzata */
+        .custom-navbar {
+        background-color: rgba(
+            31,
+            39,
+            27,
+            0.7
+        ) !important; /* Sfondo scuro trasparente */
+        color: #f4d35e !important;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        }
+    
+        body:not(.dark-theme) .custom-navbar {
+        background-color: rgba(
+            255,
+            255,
+            255,
+            0.8
+        ) !important; /* Sfondo chiaro trasparente */
+        color: #1f271b !important;
+        }
+    
+        .custom-navbar .navbar-brand img {
+        height: 50px !important;
+        width: 50px !important;
+        }
+    
+        .navbar-title {
+        font-size: 1.5rem !important;
+        color: inherit !important;
+        margin: 0 !important;
+        }
+    
+        /* Pulsanti */
+        .btn-theme,
+        .btn-nav {
+        background-color: transparent !important; /* Nessuno sfondo */
+        border: none !important; /* Rimuove il bordo */
+        color: inherit !important; /* Ereditare il colore del tema */
+        font-size: 1rem !important;
+        padding: 10px 15px !important;
+        position: relative; /* Necessario per ::after */
+        transition: color 0.3s ease-in-out !important;
+        }
+    
+        /* Effetto luce sotto */
+        .btn-theme::after,
+        .btn-nav::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 10%;
+        width: 80%; /* Larghezza della linea */
+        height: 3px; /* Spessore della linea */
+        background-color: transparent; /* Linea invisibile di default */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0px 0px 8px transparent; /* Nessun effetto iniziale */
+        }
+    
+        .btn-theme:hover::after,
+        .btn-nav:hover::after {
+        background-color: #28afb0; /* Colore del bordo sotto */
+        box-shadow: 0px 0px 8px #28afb0; /* Effetto luce */
+        }
+    
+        /* Pulsante attivo con linea fissa */
+        .btn-nav.active::after {
+        background-color: #28afb0 !important; /* Linea fissa */
+        box-shadow: 0px 0px 8px #28afb0 !important;
+        }
+    
+        /* Dropdown personalizzato */
+        .dropdown-menu {
+        color: #f4d35e !important;
+        background-color: #1f271b !important; /* Sfondo dropdown scuro */
+        border: 2px solid #28afb0 !important; /* Bordo dropdown */
+        box-shadow: 0px 0px 8px #28afb0 !important; /* Effetto luce */
+        padding: 10px 0 !important;
+        z-index: 1000; /* Evitare sovrapposizioni indesiderate */
+        }
+    
+        body:not(.dark-theme) .dropdown-menu {
+        background-color: #f4d35e !important; /* Sfondo chiaro dropdown */
+        border: 2px solid #ee964b !important; /* Bordo chiaro */
+        }
+    
+        .dropdown-item {
+        position: relative; /* Necessario per ::after */
+        padding: 10px 20px !important;
+        color: #f4d35e !important;
+        text-decoration: none !important;
+        transition: color 0.3s ease-in-out !important;
+        }
+    
+        body:not(.dark-theme) .dropdown-item {
+        color: #1f271b !important;
+        }
+    
+        /* Effetto luce sotto */
+        .dropdown-item::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 10%;
+        width: 80%; /* Larghezza della linea */
+        height: 3px; /* Spessore della linea */
+        background-color: transparent; /* Linea invisibile di default */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0px 0px 8px transparent; /* Nessun effetto iniziale */
+        }
+    
+        .dropdown-item:hover::after {
+        background-color: #28afb0; /* Colore del bordo sotto */
+        box-shadow: 0px 0px 8px #28afb0; /* Effetto luce */
+        }
+    
+        .dropdown-item:hover {
+        background-color: #1f271b !important;
+        color: #ee964b !important; /* Cambia colore al passaggio del mouse */
+        }
+    
+        /* Dropdown voci */
+        .dropdown-menu li a {
+        color: #f4d35e !important;
+        }
+    
+        #navbarButtons {
+        margin-right: 20px;
+        }
+    
+        /* Schermata di caricamento */
+        #loadingScreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #19647e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.5s ease-out; /* Transizione per scomparire */
+        }
+    
+        /* Icona di caricamento */
+        .loading-icon {
+        font-size: 50px;
+        color: #f4d35e;
+        }
+    
+        /* Effetto di scomparsa della schermata di caricamento */
+        .fade-out {
+        opacity: 0 !important;
+        pointer-events: none;
+        }
+    
+        /* Footer */
+        .custom-footer {
+        font-family: Arial, sans-serif;
+        color: #f4d35e; /* Testo */
+        background-color: #1f271b; /* Sfondo scuro */
+        padding: 20px 10px;
+        line-height: 1.5;
+        }
+    
+        body:not(.dark-theme) .custom-footer {
+        background-color: rgba(
+            209,
+            199,
+            199,
+            0.8
+        ) !important; /* Sfondo chiaro trasparente */
+        color: #1f271b !important;
+        }
+    
+        .custom-footer .footer-top {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-bottom: 2px solid #28afb0; /* Bordo separatore */
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        }
+    
+        .custom-footer .footer-section {
+        text-align: center;
+        flex: 1;
+        padding: 0 10px;
+        }
+    
+        .custom-footer .footer-section h3 {
+        color: #28afb0; /* Titoli */
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        }
+    
+        .custom-footer .footer-section p {
+        margin: 5px 0;
+        }
+    
+        .custom-footer .footer-section a {
+        color: #ee964b; /* Link */
+        text-decoration: none;
+        }
+    
+        .custom-footer .footer-section a:hover {
+        color: #f4d35e; /* Link */
+        text-decoration: none;
+        }
+        /* Footer Bottom */
+        .custom-footer .footer-bottom {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        }
+    
+        .custom-footer .footer-column {
+        flex: 1;
+        padding: 10px 20px;
+        text-align: left;
+        }
+    
+        .custom-footer .footer-column h4 {
+        color: #28afb0;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        }
+    
+        .custom-footer .footer-column ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        }
+    
+        .custom-footer .footer-column ul li {
+        margin: 5px 0;
+        }
+    
+        .custom-footer .footer-column ul li a {
+        color: #f4d35e;
+        text-decoration: none;
+        }
+    
+        .custom-footer .footer-column ul li a:hover {
+        color: #ee964b;
+        }
+    
+        /* Stile per fissare il footer */
+        body,
+        html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        }
+    
+        .main-content {
+        flex: 1; /* Si espande per occupare lo spazio disponibile */
+        }
+    
+        .custom-footer {
+        flex-shrink: 0; /* Impedisce al footer di comprimersi */
+        }
+    
+        .img-footer {
+        width: 40%;
+        border-radius: 70%;
+        background-color: #fff;
+        }
+    
+        .carousel {
+        margin-top: 5%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        }
+    
+        .carousel-content {
+        margin-left: 5%;
+        display: flex;
+        overflow-x: auto;
+        gap: 20px;
+        scroll-behavior: smooth;
+        }
+    
+        /* From Uiverse.io by alexruix */
+        .card {
+        width: 300px;
+        height: 400px;
+        padding: 0.8em;
+        background: #f5f5f5;
+        position: relative;
+        overflow: visible;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+    
+        .card-img {
+        height: 70%;
+        width: 100%;
+        border-radius: 0.5rem;
+        transition: 0.3s ease;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        }
+    
+        .card-info {
+        padding-top: 10%;
+        }
+    
+        svg {
+        width: 20px;
+        height: 20px;
+        }
+    
+        .card-footer {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 10px;
+        border-top: 1px solid #ddd;
+        }
+    
+        /*Text*/
+        .text-title {
+        font-weight: 900;
+        font-size: 1.2em;
+        line-height: 1.5;
+        }
+    
+        .text-body {
+        font-size: 0.9em;
+        padding-bottom: 10px;
+        }
+    
+        /*Button*/
+        .card-button {
+        border: 1px solid #252525;
+        display: flex;
+        padding: 0.3em;
+        cursor: pointer;
+        border-radius: 50px;
+        transition: 0.3s ease-in-out;
+        }
+    
+        /*Hover*/
+        .card-img:hover {
+        box-shadow: rgba(226, 196, 63, 0.25) 0px 13px 47px -5px,
+            rgba(180, 71, 71, 0.3) 0px 8px 16px -8px;
+        }
+    
+        .card-button:hover {
+        border: 1px solid #f4d35e;
+        background-color: #28afb0;
+        }
+    
+        /* Stile per i pulsanti Prev e Next */
+        .prev,
+        .next {
+        position: absolute;
+        top: 50%; /* Centra verticalmente rispetto al contenitore */
+        transform: translateY(-50%);
+        background-color: transparent;
+        color: #fff; /* Colore del testo (o icone) */
+        border: none;
+        padding: 10px 15px; /* Spaziatura interna */
+        font-size: 30px; /* Dimensione del testo */
+        cursor: pointer;
+        z-index: 10; /* Assicurati che siano sopra gli altri elementi */
+        opacity: 0.8; /* Leggermente trasparente per un aspetto moderno */
+        transition: all 0.3s ease; /* Transizione fluida per hover */
+        }
+    
+        /* Posizioni specifiche */
+        .prev {
+        left: 10px; /* Distanza dal bordo sinistro */
+        }
+    
+        .next {
+        right: 10px; /* Distanza dal bordo destro */
+        }
+    
+        /* Effetto hover */
+        .prev:hover,
+        .next:hover {
+        opacity: 1; /* Rende il pulsante completamente opaco */
+        transform: translateY(-50%) scale(1.1); /* Leggero zoom per evidenziare */
+        }
+    
+        /* Per dispositivi mobili */
+        @media screen and (max-width: 768px) {
+        .prev,
+        .next {
+            font-size: 16px; /* Riduci la dimensione del testo */
+            padding: 8px 12px; /* Riduci la spaziatura */
+        }
+        }
+    
+        /* Stile Scrollbar - Tema scuro */
+        body.dark-theme::-webkit-scrollbar {
+        width: 10px;
+        }
+    
+        body.dark-theme::-webkit-scrollbar-track {
+        background: #19647e; /* Sfondo scuro per il track */
+        border-radius: 5px;
+        }
+    
+        body.dark-theme::-webkit-scrollbar-thumb {
+        background: #28afb0; /* Colore del thumb */
+        border-radius: 5px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5); /* Effetto ombra */
+        }
+    
+        body.dark-theme::-webkit-scrollbar-thumb:hover {
+        background: #f4d35e; /* Colore in hover */
+        }
+    
+        /* Stile Scrollbar - Tema chiaro */
+        body:not(.dark-theme)::-webkit-scrollbar {
+        width: 10px;
+        }
+    
+        body:not(.dark-theme)::-webkit-scrollbar-track {
+        background: #ffffff; /* Sfondo chiaro per il track */
+        border-radius: 5px;
+        }
+    
+        body:not(.dark-theme)::-webkit-scrollbar-thumb {
+        background: #ee964b; /* Colore del thumb */
+        border-radius: 5px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3); /* Effetto ombra */
+        }
+    
+        body:not(.dark-theme)::-webkit-scrollbar-thumb:hover {
+        background: #28afb0; /* Colore in hover */
+        }
+    
+        /* Stile per scrollbar Firefox */
+        body {
+        scrollbar-width: thin;
+        scrollbar-color: #28afb0 #19647e; /* Colore thumb e track - tema scuro */
+        }
+    
+        body:not(.dark-theme) {
+        scrollbar-color: #ee964b #ffffff; /* Colore thumb e track - tema chiaro */
+        }
+    
+        /* From Uiverse.io by aryamitra06 */
+        .loader {
+        display: flex;
+        align-items: center;
+        }
+    
+        .bar {
+        display: inline-block;
+        width: 3px;
+        height: 20px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+        animation: scale-up4 1s linear infinite;
+        }
+    
+        .bar:nth-child(2) {
+        height: 35px;
+        margin: 0 5px;
+        animation-delay: 0.25s;
+        }
+    
+        .bar:nth-child(3) {
+        animation-delay: 0.5s;
+        }
+    
+        @keyframes scale-up4 {
+        20% {
+            background-color: #ffff;
+            transform: scaleY(1.5);
+        }
+    
+        40% {
+            transform: scaleY(1);
+        }
+        }
+    
+        /* Intro Section */
+        .intro {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: transparent;
+        }
+        
+        .intro h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .intro p {
+            font-size: 1rem;
+            color: #fff;
+        }
+        
+        /* Team Section */
+        .team {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 50px 20px;
+        }
+        
+        .team-member {
+            text-align: center;
+            width: 200px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .team-member .photo {
+            width: 150px;
+            height: 150px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+        
+        .team-member h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .team-member p {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .social-icon {
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: #007bff;
+        }
+    
+        .divider {
+            width: 90%;
+            height: 2px;
+            background-color: #ee964b;
+            margin: auto;
+          }
