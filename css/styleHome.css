@@ -607,3 +607,12 @@ body:not(.dark-theme) {
     opacity: 0;
   }
 }
+
+.service-title {
+  color: #fff;
+  font-size: 3rem; /* Grandezza del titolo */
+  font-weight: bold;
+  margin: 0; /* Nessun margine */
+  text-align: center;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8); /* Ombra per leggibilità */
+}
