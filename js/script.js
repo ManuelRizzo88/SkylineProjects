@@ -194,5 +194,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById("passwordInput").value;
       login(email, password);
     });
+
+    document.getElementById("signupForm").addEventListener("submit", async (event) => { event.preventDefault(); 
+    const name = document.getElementById("signupName").value; 
+    const surname = document.getElementById("signupSurname").value; 
+    const email = document.getElementById("signupEmail").value; 
+    const password = document.getElementById("signupPassword").value; 
+    try { const response = await fetch("http://localhost:3000/signup", { method: "POST", headers: { "Content-Type": "application/json" }, 
+      body: JSON.stringify({ name, surname, email, password }), }); if (response.ok) { alert("Registrazione avvenuta con successo! Effettua il login."); 
+      window.location.href = "login.html"; } else 
+    { const errorData = await response.json(); alert(errorData.error || "Errore durante la registrazione"); } } catch (error) { console.error(error); alert("Errore del server"); } });
   }
 });
