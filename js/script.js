@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Errore del server");
       }
     }
-
+  
     // Simula il login con un'email e una password (aggiungi un form per login reale)
     document.getElementById("loginButton").addEventListener("click", () => {
       const email = document.getElementById("emailInput").value;
