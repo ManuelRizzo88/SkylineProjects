@@ -62,6 +62,8 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+
+
 app.get('/vendite-mensili/:venditoreId', async (req, res) => {
   const venditoreId = req.params.venditoreId;
 

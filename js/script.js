@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Gestione del login
     async function login(email, password) {
       try {
-        const response = await fetch("http://localhost:3000/login", {
+        const response = await fetch("/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -194,32 +194,36 @@ document.addEventListener("DOMContentLoaded", () => {
       login(email, password);
     });
 
-    document
-      .getElementById("signupForm")
-      .addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const name = document.getElementById("signupName").value;
-        const surname = document.getElementById("signupSurname").value;
-        const email = document.getElementById("signupEmail").value;
-        const password = document.getElementById("signupPassword").value;
-        try {
-          const response = await fetch("http://localhost:3000/signup", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, surname, email, password }),
-          });
-          if (response.ok) {
-            alert("Registrazione avvenuta con successo! Effettua il login.");
-            window.location.href = "login.html";
-          } else {
-            const errorData = await response.json();
-            alert(errorData.error || "Errore durante la registrazione");
-          }
-        } catch (error) {
-          console.error(error);
-          alert("Errore del server");
-        }
+    $(document).ready(function () {
+      $("#signupForm").on("submit", function (e) {
+        console.log("Form inviato!");
+        e.preventDefault(); // Evita il comportamento predefinito del form
+        console.log("Form inviato!");
+        // Recupera i dati del form
+        const formData = {
+          name: $("#signupName").val(),
+          surname: $("#signupSurname").val(),
+          email: $("#signupEmail").val(),
+          password: $("#signupPassword").val(),
+        };
+
+        // Invia la richiesta AJAX
+        $.ajax({
+          url: "/signup",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(formData),
+          success: function (response) {
+            alert("Registrazione Effettuata Con Successo");
+          },
+          error: function (xhr) {
+            const errorMessage =
+              xhr.responseJSON?.error || "Errore sconosciuto";
+            alert("Errore Durante La Registrazione" + errorMessage);
+          },
+        });
       });
+    });
   }
 
   document
