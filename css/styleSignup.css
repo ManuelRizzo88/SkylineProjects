@@ -18,6 +18,19 @@ body {
     overflow: hidden;
 }
 
+.buttonHouse
+{
+    position: fixed;
+    left: 585px;
+    top: 280px;
+    cursor: pointer;
+    font-size: 20px;
+}
+.buttonHouse:hover
+{
+    color:#F4D35E;
+}
+
 .left-panel, .right-panel {
     flex: 1;
     padding: 40px;
