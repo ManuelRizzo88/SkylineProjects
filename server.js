@@ -5,6 +5,7 @@ const { Pool } = require("pg");
 const path = require("path");
 require("dotenv").config();
 const crypto = require("crypto");
+const { error } = require("console");
 
 const app = express();
 const port = 3000;
@@ -78,25 +79,30 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  console.log(req.body);
   
-  if (!email || !password) {
-    return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
-  }
+  // if (!email || !password) {
+  //   return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
+  // }
 
-  console.log(email,password);
   try {
+    console.log(email);
     // Cerca l'utente nel database
     const userQuery = await pool.query("SELECT * FROM utente WHERE email = $1", [email]);
     const user = userQuery.rows[0];
 
+    console.log(userQuery.rows[0]);
+
+
     if (!user) {
-      return res.status(401).json({ error: "Credenziali non valide" });
+      return res.status(401).json({ error: "Credenziali non valide"+ error.message });
     }
 
+    console.log(user.passhash);
     // Verifica la password
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(401).json({ error: "Credenziali non valide" });
+    const passwordMatch = await bcrypt.compare(password, user.passhash);
+    if (passwordMatch) {
+      return res.status(401).json({ error: "Credenziali non valide " + error.message });
     }
 
     res.status(200).json({
@@ -108,30 +114,6 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-//uniqueID
-const generateUniqueId = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
-  let result = '';
-  for (let i = 0; i < 5; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
-const generateUniqueIdInDb = async () => {
-  let uniqueId;
-  let isUnique = false;
-
-  while (!isUnique) {
-    uniqueId = generateUniqueId();
-    const result = await pool.query('SELECT COUNT(*) FROM utente WHERE id_cliente = $1', [uniqueId]);
-    if (result.rows[0].count == 0) {
-      isUnique = true;
-    }
-  }
-
-  return uniqueId;
-}
 
 app.get('/vendite-mensili/:venditoreId', async (req, res) => {
   const venditoreId = req.params.venditoreId;

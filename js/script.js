@@ -151,15 +151,14 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navba
 // Funzione per il login
 async function login() {
   
-  const loginemail = document.getElementById("loginEmail").value;
-  const loginpassword = document.getElementById("loginPassword").value;
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
 
-  console.log(loginemail,loginpassword);
   try {
     const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loginemail, loginpassword }),  
+      body: JSON.stringify({ email, password }),  
     });
 
     if (response.ok) {
