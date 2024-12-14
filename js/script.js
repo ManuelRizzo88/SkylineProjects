@@ -93,7 +93,7 @@ document.querySelector(".next").addEventListener("click", () => {
 });
 // Gestione della Navbar
 function setupNavbar() {
-  const navbarDynamicContent = document.getElementById("navbarDynamicContent");
+  const navbarDynamicContent = document.getElementById("navbarButtons");
   const dropdownMenuLink = document.getElementById("dropdownMenuLink");
   const dropdownMenu = dropdownMenuLink.nextElementSibling;
 
@@ -107,7 +107,7 @@ function setupNavbar() {
   }
 }
 
-function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navbarDynamicContent) {
+function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu) {
   // Aggiorna il nome nel dropdown
   dropdownMenuLink.innerHTML = `${user.username} <i class="fa-solid fa-caret-down" style="margin-left: 5px;"></i>`;
 
@@ -115,6 +115,7 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navba
   dropdownMenu.innerHTML = "";
 
   // Aggiungi l'opzione "Opzioni"
+ 
   const optionsItem = document.createElement("li");
   const optionsLink = document.createElement("a");
   optionsLink.className = "dropdown-item";
@@ -122,6 +123,15 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navba
   optionsLink.textContent = "Opzioni";
   optionsItem.appendChild(optionsLink);
   dropdownMenu.appendChild(optionsItem);
+
+  const dashboardItem = document.createElement("li");
+  const dashboardLink = document.createElement("a");
+  dashboardLink.className = "dropdown-item";
+  dashboardLink.href = "dashboard.html";
+  dashboardLink.textContent = "Dashboard";
+  optionsItem.appendChild(dashboardLink);
+  dropdownMenu.appendChild(dashboardItem);
+
 
   // Aggiungi l'opzione "Logout"
   const logoutItem = document.createElement("li");
@@ -136,16 +146,6 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navba
   };
   logoutItem.appendChild(logoutLink);
   dropdownMenu.appendChild(logoutItem);
-
-  // Aggiungi il pulsante Dashboard
-  const dashboardButton = document.createElement("button");
-  dashboardButton.className = "btn btn-nav mx-1";
-  dashboardButton.type = "button";
-  dashboardButton.textContent = "Dashboard";
-  dashboardButton.onclick = () => {
-    window.location.href = "dashboard.html";
-  };
-  navbarDynamicContent.appendChild(dashboardButton);
 }
 
 // Funzione per il login
@@ -208,5 +208,4 @@ async function signupfun(){
 // Inizializzazione
 document.addEventListener("DOMContentLoaded", () => {
   setupNavbar();
-  setupSignupListeners();
 });
