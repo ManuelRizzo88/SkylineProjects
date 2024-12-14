@@ -148,23 +148,18 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navba
   navbarDynamicContent.appendChild(dashboardButton);
 }
 
-// Setup dei listener per il login
-  const loginButton = document.getElementById("loginButton");
-  if (loginButton) {
-    loginButton.addEventListener("click", () => {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      login(email, password);
-    });
-  }
-
 // Funzione per il login
-async function login(email, password) {
+async function login() {
+  
+  const loginemail = document.getElementById("loginEmail").value;
+  const loginpassword = document.getElementById("loginPassword").value;
+
+  console.log(loginemail,loginpassword);
   try {
-    const response = await fetch("/login", {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ loginemail, loginpassword }),  
     });
 
     if (response.ok) {
@@ -182,16 +177,17 @@ async function login(email, password) {
   }
 }
 
-// Setup dei listener per la registrazione
+//funzione signup
 async function signupfun(){
-    alert("dfrgrgf");
+
     const name = document.getElementById("signupName").value;
     const surname = document.getElementById("signupSurname").value;
     const email = document.getElementById("signupEmail").value;
     const password = document.getElementById("signupPassword").value;
     
+
     try {
-      const response = await fetch("/signup", {
+      const response = await fetch("http://localhost:3000/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, surname, email, password }),
@@ -205,7 +201,7 @@ async function signupfun(){
         alert(errorData.error || "Errore durante la registrazione");
       }
     } catch (error) {
-      console.error("Errore durante la registrazione:", error);
+      console.error("Errore durante la registrazione:", error.message);
       alert("Errore del server");
     }
   }

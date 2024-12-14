@@ -27,11 +27,11 @@
         </button>
         </div>
         <p>or use your email password</p>
-        <form id="loginForm">
+        <form id="loginForm" onsubmit="return false">
         <input id="loginEmail" type="email" placeholder="Email" required>
         <input id="loginPassword" type="password" placeholder="Password" required>
         <a href="#" class="forgot-password">Forgot Your Password?</a>
-        <button id="loginButton" class="btn signin-btn">Sign In</button>
+        <button id="loginButton" class="btn signin-btn" onclick="login()">Sign In</button>
         </form>
     </div>
 

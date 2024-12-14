@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
 const path = require("path");
 require("dotenv").config();
+const crypto = require("crypto");
 
 const app = express();
 const port = 3000;
@@ -18,6 +19,11 @@ app.use("/css", express.static(path.join(__dirname, "css")));
 app.use("/js", express.static(path.join(__dirname, "js")));
 app.use("/img", express.static(path.join(__dirname, "img")));
 app.use(express.json());
+
+
+function generateRandomId() {
+  return crypto.randomBytes(8).toString("hex").substring(0, 8); // Usa "length" per limitare i caratteri
+}
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "html", "home.html"));
@@ -36,41 +42,48 @@ app.get("/services", async (req, res) => {
 
 app.post("/signup", async (req, res) => {
   const { name, surname, email, password } = req.body;
-  console.log("Dati Ricevuti")
+  console.log("Dati Ricevuti");
+  console.log(name,surname,email,password);
   if (!name || !surname || !email || !password) {
     return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
   }
 
   try {
+    
     // Controlla se l'utente esiste già
     const userCheck = await pool.query("SELECT * FROM utente WHERE email = $1", [email]);
     if (userCheck.rows.length > 0) {
       return res.status(409).json({ error: "Email già registrata" });
     }
 
+    const idCliente = generateRandomId(8); // Lunghezza 8 caratteri
+    const idVenditore = generateRandomId(8);
     // Hash della password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Inserisci il nuovo utente nel database
+    
     await pool.query(
-      "INSERT INTO utente (name, surname, email, passhash, idcliente) VALUES ($1, $2, $3, $4, $5)",
-      [name, surname, email, hashedPassword, generateUniqueId()]
+      "INSERT INTO utente (name, surname, email, passhash, idcliente, idvenditore) VALUES ($1, $2, $3, $4, $5, $6)",
+      [name, surname, email, hashedPassword, idCliente, idVenditore]
     );
 
     res.status(201).json({ message: "Registrazione effettuata con successo" });
   } catch (error) {
     console.error("Errore durante la registrazione:", error);
-    res.status(500).json({ error: "Errore del server" });
+    res.status(500).json({ error: error.message });
   }
 });
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  
   if (!email || !password) {
     return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
   }
 
+  console.log(email,password);
   try {
     // Cerca l'utente nel database
     const userQuery = await pool.query("SELECT * FROM utente WHERE email = $1", [email]);
@@ -92,7 +105,7 @@ app.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Errore durante il login:", error);
-    res.status(500).json({ error: "Errore del server" });
+    res.status(500).json({ error: error.message });
   }
 });
 
