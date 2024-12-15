@@ -68,7 +68,7 @@ app.post("/signup", async (req, res) => {
     }
 
     const idCliente = generateRandomId(8); // Lunghezza 8 caratteri
-    const idVenditore = generateRandomId(8);
+    const idVenditore = generateRandomId(10);
     // Hash della password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -91,9 +91,9 @@ app.post("/login", async (req, res) => {
 
   console.log(req.body);
   
-  // if (!email || !password) {
-  //   return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
-  // }
+  if (!email || !password) {
+    return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
+  }
 
   try {
     console.log(email);
@@ -116,6 +116,7 @@ app.post("/login", async (req, res) => {
     }
 
     res.status(200).json({
+      idvenditore: user.idvenditore,
       username: user.name,
       email: user.email,
     });
@@ -147,7 +148,27 @@ app.get('/vendite-mensili/:venditoreId', async (req, res) => {
   }
 });
 
+
+app.get("/dashboard", async (req, res) => {
+  const { idVenditore } = req.query;
+
+  if (!idVenditore) {
+    return res.status(400).json({ error: "ID venditore non fornito" });
+  }
+
+  try {
+    // Esegui una query per ottenere i dati relativi all'idVenditore
+    const venditoreData = await pool.query("SELECT * FROM servizi WHERE idvenditore = $1", [idVenditore]);
+
+    res.status(200).json(venditoreData.rows);
+  } catch (error) {
+    console.error("Errore durante il caricamento della dashboard:", error);
+    res.status(500).json({ error: "Errore del server" });
+  }
+});
+
 // Avvia il server
 app.listen(port, () => {
   console.log(`Server avviato su http://localhost:${port}`);
 });
+
