@@ -3,6 +3,10 @@ const themeSwitcher = document.getElementById("themeSwitcher");
 const body = document.body;
 const themeIcon = themeSwitcher.querySelector("i");
 
+// Inizializzazione
+document.addEventListener("DOMContentLoaded", () => {
+  setupNavbar();
+});
 // Avvia con il tema scuro e l'icona del sole
 body.classList.add("dark-theme");
 themeIcon.classList.replace("fa-moon", "fa-sun");
@@ -46,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Chiamata API per ottenere i servizi
-    const response = await fetch("/services");
+    const response = await fetch("/topservices");
     const services = await response.json();
 
     // Aggiungi ogni servizio come card
@@ -205,7 +209,4 @@ async function signupfun(){
     }
   }
 
-// Inizializzazione
-document.addEventListener("DOMContentLoaded", () => {
-  setupNavbar();
-});
+

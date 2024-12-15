@@ -41,6 +41,16 @@ app.get("/services", async (req, res) => {
   }
 });
 
+app.get("/topservices", async (req, res) => {
+  try {
+    const { rows } = await pool.query("SELECT * FROM servizio LIMIT 20;");
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Errore del server");
+  }
+});
+
 app.post("/signup", async (req, res) => {
   const { name, surname, email, password } = req.body;
   console.log("Dati Ricevuti");
