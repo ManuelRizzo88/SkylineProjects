@@ -136,7 +136,7 @@ app.get('/vendite-mensili/:venditoreId', async (req, res) => {
         COUNT(ordine.idordine) AS numero_ordini,
         SUM(ordine.prezzo) AS totale_vendite
       FROM ordine
-      WHERE ordine.idvenditore = $1
+      WHERE ordine.idvenditore = $1 AND ordine.stato = 'Concluso'
       GROUP BY mese
       ORDER BY mese;
     `;
