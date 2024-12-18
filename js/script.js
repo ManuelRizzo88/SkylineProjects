@@ -3,6 +3,10 @@ const themeSwitcher = document.getElementById("themeSwitcher");
 const body = document.body;
 const themeIcon = themeSwitcher.querySelector("i");
 
+// Inizializzazione
+document.addEventListener("DOMContentLoaded", () => {
+  setupNavbar();
+});
 // Avvia con il tema scuro e l'icona del sole
 body.classList.add("dark-theme");
 themeIcon.classList.replace("fa-moon", "fa-sun");
@@ -46,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Chiamata API per ottenere i servizi
-    const response = await fetch("/services");
+    const response = await fetch("/topservices");
     const services = await response.json();
 
     // Aggiungi ogni servizio come card
@@ -93,7 +97,7 @@ document.querySelector(".next").addEventListener("click", () => {
 });
 // Gestione della Navbar
 function setupNavbar() {
-  const navbarDynamicContent = document.getElementById("navbarDynamicContent");
+  const navbarDynamicContent = document.getElementById("navbarButtons");
   const dropdownMenuLink = document.getElementById("dropdownMenuLink");
   const dropdownMenu = dropdownMenuLink.nextElementSibling;
 
@@ -107,7 +111,7 @@ function setupNavbar() {
   }
 }
 
-function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navbarDynamicContent) {
+function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu) {
   // Aggiorna il nome nel dropdown
   dropdownMenuLink.innerHTML = `${user.username} <i class="fa-solid fa-caret-down" style="margin-left: 5px;"></i>`;
 
@@ -115,6 +119,7 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navba
   dropdownMenu.innerHTML = "";
 
   // Aggiungi l'opzione "Opzioni"
+ 
   const optionsItem = document.createElement("li");
   const optionsLink = document.createElement("a");
   optionsLink.className = "dropdown-item";
@@ -122,6 +127,15 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navba
   optionsLink.textContent = "Opzioni";
   optionsItem.appendChild(optionsLink);
   dropdownMenu.appendChild(optionsItem);
+
+  const dashboardItem = document.createElement("li");
+  const dashboardLink = document.createElement("a");
+  dashboardLink.className = "dropdown-item";
+  dashboardLink.href = "dashboard.html";
+  dashboardLink.textContent = "Dashboard";
+  optionsItem.appendChild(dashboardLink);
+  dropdownMenu.appendChild(dashboardItem);
+
 
   // Aggiungi l'opzione "Logout"
   const logoutItem = document.createElement("li");
@@ -136,35 +150,19 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu, navba
   };
   logoutItem.appendChild(logoutLink);
   dropdownMenu.appendChild(logoutItem);
-
-  // Aggiungi il pulsante Dashboard
-  const dashboardButton = document.createElement("button");
-  dashboardButton.className = "btn btn-nav mx-1";
-  dashboardButton.type = "button";
-  dashboardButton.textContent = "Dashboard";
-  dashboardButton.onclick = () => {
-    window.location.href = "dashboard.html";
-  };
-  navbarDynamicContent.appendChild(dashboardButton);
 }
 
-// Setup dei listener per il login
-  const loginButton = document.getElementById("loginButton");
-  if (loginButton) {
-    loginButton.addEventListener("click", () => {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      login(email, password);
-    });
-  }
-
 // Funzione per il login
-async function login(email, password) {
+async function login() {
+  
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
   try {
-    const response = await fetch("/login", {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password }),  
     });
 
     if (response.ok) {
@@ -182,16 +180,17 @@ async function login(email, password) {
   }
 }
 
-// Setup dei listener per la registrazione
+//funzione signup
 async function signupfun(){
-    alert("dfrgrgf");
+
     const name = document.getElementById("signupName").value;
     const surname = document.getElementById("signupSurname").value;
     const email = document.getElementById("signupEmail").value;
     const password = document.getElementById("signupPassword").value;
     
+
     try {
-      const response = await fetch("/signup", {
+      const response = await fetch("http://localhost:3000/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, surname, email, password }),
@@ -205,13 +204,9 @@ async function signupfun(){
         alert(errorData.error || "Errore durante la registrazione");
       }
     } catch (error) {
-      console.error("Errore durante la registrazione:", error);
+      console.error("Errore durante la registrazione:", error.message);
       alert("Errore del server");
     }
   }
 
-// Inizializzazione
-document.addEventListener("DOMContentLoaded", () => {
-  setupNavbar();
-  setupSignupListeners();
-});
+
