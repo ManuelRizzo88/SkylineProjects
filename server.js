@@ -3,9 +3,11 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
 const path = require("path");
-require("dotenv").config();
 const crypto = require("crypto");
 const { error } = require("console");
+const multer = require("multer");
+
+require("dotenv").config();
 
 const app = express();
 const port = 3000;
@@ -14,6 +16,9 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 // Configura CORS
 app.use(cors());
+// Configurazione Multer per gestire i file
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 app.use(express.static(path.join(__dirname, "html")));
 app.use("/css", express.static(path.join(__dirname, "css")));
@@ -164,6 +169,27 @@ app.get("/dashboard", async (req, res) => {
   } catch (error) {
     console.error("Errore durante il caricamento della dashboard:", error);
     res.status(500).json({ error: "Errore del server" });
+  }
+});
+
+app.post("/AddService", upload.single("image"), async (req, res) => {
+  const { title, description, price, sellerId } = req.body;
+  const imageBuffer = req.file ? req.file.buffer : null;
+
+  if (!title || !description || !price || !sellerId || !imageBuffer) {
+      return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
+  }
+
+  try {
+      const query = `
+          INSERT INTO services (title, description, price, image, seller_id)
+          VALUES ($1, $2, $3, $4, $5)
+      `;
+      await pool.query(query, [title, description, price, imageBuffer, sellerId]);
+      res.status(200).json({ message: "Servizio aggiunto con successo!" });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Errore nel database" });
   }
 });
 

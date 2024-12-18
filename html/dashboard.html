@@ -64,7 +64,7 @@
           <button class="sidebar-button">Button</button>
           <button class="sidebar-button">Button</button>
           <button class="sidebar-button">Button</button>
-          <button class="sidebar-button">Button</button>
+          <button class="sidebar-button service" data-bs-toggle="modal" data-bs-target="#addServiceModal"><i class="fas fa-plus"></i> Aggiungi Servizio</button>
         </div>
     
         <!-- Area principale -->
@@ -76,6 +76,43 @@
             <div class="black-box"></div>
           </div>
         </div>
+        <!-- Modal -->
+        <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addServiceModalLabel">Aggiungi Servizio</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="serviceForm" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="serviceImage" class="form-label">Immagine</label>
+                                <input type="file" class="form-control" id="serviceImage" accept="image/*" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="serviceTitle" class="form-label">Titolo</label>
+                                <input type="text" class="form-control" id="serviceTitle" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="serviceDescription" class="form-label">Descrizione</label>
+                                <textarea class="form-control" id="serviceDescription" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="servicePrice" class="form-label">Prezzo</label>
+                                <input type="number" class="form-control" id="servicePrice" step="0.01" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                        <button type="button" class="btn btn-primary" id="submitService">Invia</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <footer class="custom-footer">

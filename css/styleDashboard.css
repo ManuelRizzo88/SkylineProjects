@@ -404,3 +404,13 @@ body {
 body:not(.dark-theme) {
   scrollbar-color: #ee964b #ffffff; /* Colore thumb e track - tema chiaro */
 }
+
+.service
+{
+  background-color: rgb(57, 150, 57);
+}
+
+.service:hover
+{
+  background-color: rgb(23, 206, 23);
+}

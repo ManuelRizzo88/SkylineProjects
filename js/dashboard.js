@@ -98,3 +98,50 @@ function mostraMessaggioNessunDato(messaggio) {
 document.addEventListener("DOMContentLoaded", () => {
     creaGrafico();
 });
+
+document.getElementById("submitService").addEventListener("click", async () => {
+    const serviceImage = document.getElementById('serviceImage').value;
+    const serviceTitle = document.getElementById('serviceTitle').value;
+    const serviceDescription = document.getElementById('serviceDescription').value;
+    const servicePrice = document.getElementById('servicePrice').value;
+
+    // Recupero idVenditore dal localStorage
+    const idVenditore = localStorage.getItem('idvenditore');
+    if (!idVenditore) {
+        alert("ID venditore non trovato. Assicurati di aver effettuato l'accesso.");
+        return;
+    }
+
+    // Creazione del payload
+    const serviceData = {
+        image: serviceImage,
+        title: serviceTitle,
+        description: serviceDescription,
+        price: parseFloat(servicePrice),
+        sellerId: idVenditore
+    };
+
+    try {
+        // Invio dei dati al backend
+        const response = await fetch('/AddServices', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(serviceData)
+        });
+
+        if (response.ok) {
+            alert('Servizio aggiunto con successo!');
+            document.getElementById('serviceForm').reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addServiceModal'));
+            modal.hide();
+        } else {
+            alert('Errore durante l\'aggiunta del servizio. Riprova.');
+        }
+    } catch (error) {
+        console.error('Errore:', error);
+        alert('Si è verificato un errore durante la connessione al server.');
+    }
+});
+
