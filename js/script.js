@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.className = "card";
 
       card.innerHTML = `
-        <div class="card-img" style="background-image: url('${service.imageurl}');"></div>
+       <div class="card-img" style="background-image: url('${service.image || ''}');"></div>
         <div class="card-info">
           <p class="text-title">${service.titolo}</p>
           <p class="text-body">${service.descrizione}</p>

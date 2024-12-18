@@ -106,7 +106,8 @@ document.getElementById("submitService").addEventListener("click", async () => {
     const servicePrice = document.getElementById('servicePrice').value;
 
     // Recupero idVenditore dal localStorage
-    const idVenditore = localStorage.getItem('idvenditore');
+    const user = JSON.parse(localStorage.getItem("user"));
+    const idVenditore = user.idvenditore;
     if (!idVenditore) {
         alert("ID venditore non trovato. Assicurati di aver effettuato l'accesso.");
         return;
@@ -123,7 +124,7 @@ document.getElementById("submitService").addEventListener("click", async () => {
 
     try {
         // Invio dei dati al backend
-        const response = await fetch('/AddServices', {
+        const response = await fetch('/AddService', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -18,7 +18,7 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 app.use(cors());
 // Configurazione Multer per gestire i file
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer();
 
 app.use(express.static(path.join(__dirname, "html")));
 app.use("/css", express.static(path.join(__dirname, "css")));
@@ -38,13 +38,25 @@ app.get("/", (req, res) => {
 // API per ottenere servizi
 app.get("/services", async (req, res) => {
   try {
+    // Recupero dei dati dal database
     const { rows } = await pool.query("SELECT * FROM servizio;");
-    res.json(rows);
+
+    // Modifica i dati per convertire BYTEA (image) in Base64
+    const services = rows.map(service => {
+      return {
+        ...service,
+        image: service.image ? `data:image/png;base64,${service.image.toString("base64")}` : null
+      };
+    });
+
+    // Invio della risposta JSON con le immagini convertite
+    res.json(services);
   } catch (error) {
-    console.error(error);
+    console.error("Errore nel recupero dei servizi:", error);
     res.status(500).send("Errore del server");
   }
 });
+
 
 app.get("/topservices", async (req, res) => {
   try {
@@ -174,7 +186,7 @@ app.get("/dashboard", async (req, res) => {
 
 app.post("/AddService", upload.single("image"), async (req, res) => {
   const { title, description, price, sellerId } = req.body;
-  const imageBuffer = req.file ? req.file.buffer : null;
+  const imageBuffer =req.file?.buffer;
 
   if (!title || !description || !price || !sellerId || !imageBuffer) {
       return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
@@ -182,7 +194,7 @@ app.post("/AddService", upload.single("image"), async (req, res) => {
 
   try {
       const query = `
-          INSERT INTO services (title, description, price, image, seller_id)
+          INSERT INTO servizio (titolo, descrizione, prezzo, image, idvenditore)
           VALUES ($1, $2, $3, $4, $5)
       `;
       await pool.query(query, [title, description, price, imageBuffer, sellerId]);
