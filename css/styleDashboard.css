@@ -414,3 +414,24 @@ body:not(.dark-theme) {
 {
   background-color: rgb(23, 206, 23);
 }
+
+.form-label
+{
+  color:#28AFB0;
+}
+
+.modal-title
+{
+  color:#ee964b;
+}
+
+.btn-modal
+{
+  background-color: #28afb0;
+  color:white;
+}
+
+.btn-modal:hover
+{
+  background-color: #19647e; 
+}
