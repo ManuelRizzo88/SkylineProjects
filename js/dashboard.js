@@ -124,7 +124,7 @@ document.getElementById("submitService").addEventListener("click", async () => {
 
     try {
         // Invio dei dati al backend
-        const response = await fetch('/AddService', {
+        const response = await fetch('/addService', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
