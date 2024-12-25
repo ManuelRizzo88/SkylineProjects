@@ -6,6 +6,7 @@ const path = require("path");
 const crypto = require("crypto");
 const { error } = require("console");
 const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
 
 require("dotenv").config();
 
@@ -13,12 +14,19 @@ const app = express();
 const port = 3000;
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME, // Sostituisci con il tuo Cloud Name
+  api_key: process.env.API_KEY,       // Sostituisci con la tua API Key
+  api_secret: process.env.API_SECRET  // Sostituisci con il tuo API Secret
+});   
 
+module.exports = cloudinary;
 // Configura CORS
 app.use(cors());
+
 // Configurazione Multer per gestire i file
 const storage = multer.memoryStorage();
-const upload = multer();
+const upload = multer({ storage });
 
 app.use(express.static(path.join(__dirname, "html")));
 app.use("/css", express.static(path.join(__dirname, "css")));
@@ -188,27 +196,33 @@ app.post("/addService", upload.single("image"), async (req, res) => {
   try {
     const { titolo, descrizione, prezzo } = req.body;
 
-    // Verifica che i campi obbligatori siano presenti
-    if (!titolo || !descrizione || !prezzo) {
+    // Controlla che tutti i campi siano stati forniti
+    if (!titolo || !descrizione || !prezzo || !req.file) {
       return res.status(400).send("Tutti i campi sono obbligatori.");
     }
 
-    // Verifica che l'immagine sia stata caricata
-    const imageBuffer = req.file?.buffer;
-    if (!imageBuffer) {
-      return res.status(400).send("L'immagine è obbligatoria.");
-    }
+    // Step 1: Carica l'immagine su Cloudinary
+    const result = await cloudinary.uploader.upload_stream(
+      { folder: "services" }, // Sottocartella su Cloudinary
+      (error, result) => {
+        if (error) throw error;
+        return result;
+      }
+    );
 
-    // Query per inserire i dati nel database
+    // Ottieni il link pubblico dell'immagine
+    const imageUrl = result.secure_url;
+
+    // Step 2: Salva il link nel database
     const query = `
-      INSERT INTO servizio (titolo, descrizione, prezzo, image)
+      INSERT INTO servizio (titolo, descrizione, prezzo, imageurl)
       VALUES ($1, $2, $3, $4)
     `;
-    await pool.query(query, [titolo, descrizione, parseFloat(prezzo), imageBuffer]);
+    await pool.query(query, [titolo, descrizione, prezzo, imageUrl]);
 
-    res.status(200).send("Servizio caricato con successo!");
+    res.status(201).send("Servizio caricato con successo!");
   } catch (error) {
-    console.error("Errore durante il caricamento del servizio:", error);
+    console.error("Errore durante il caricamento:", error);
     res.status(500).send("Errore del server.");
   }
 });
