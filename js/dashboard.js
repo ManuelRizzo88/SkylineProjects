@@ -115,7 +115,7 @@ document.getElementById("submitService").addEventListener("click", async () => {
 
     // Creazione del payload
     const serviceData = {
-        image: serviceImage,
+        imageurl: serviceImage,
         title: serviceTitle,
         description: serviceDescription,
         price: parseFloat(servicePrice),

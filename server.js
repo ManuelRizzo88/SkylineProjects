@@ -5,7 +5,7 @@ const { Pool } = require("pg");
 const path = require("path");
 const crypto = require("crypto");
 const { error } = require("console");
-const multer = require("multer");
+const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 
 require("dotenv").config();
@@ -24,9 +24,7 @@ module.exports = cloudinary;
 // Configura CORS
 app.use(cors());
 
-// Configurazione Multer per gestire i file
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+app.use(fileUpload({ useTempFiles: true }));
 
 app.use(express.static(path.join(__dirname, "html")));
 app.use("/css", express.static(path.join(__dirname, "css")));
@@ -192,37 +190,38 @@ app.get("/dashboard", async (req, res) => {
   }
 });
 
-app.post("/addService", upload.single("image"), async (req, res) => {
+app.post("/addService", async (req, res) => {
   try {
-    const { titolo, descrizione, prezzo } = req.body;
+    const { titolo, descrizione, prezzo, imageurl } = req.body;
 
-    // Controlla che tutti i campi siano stati forniti
-    if (!titolo || !descrizione || !prezzo || !req.file) {
-      return res.status(400).send("Tutti i campi sono obbligatori.");
+    // Validazione dei dati
+    if (!titolo || !descrizione || !prezzo || !req.files || !req.files.image) {
+      return res.status(400).send("Tutti i campi sono obbligatori, inclusa un'immagine.");
     }
 
-    // Step 1: Carica l'immagine su Cloudinary
-    const result = await cloudinary.uploader.upload_stream(
-      { folder: "services" }, // Sottocartella su Cloudinary
-      (error, result) => {
-        if (error) throw error;
-        return result;
-      }
-    );
+    const file = req.files.image;
 
-    // Ottieni il link pubblico dell'immagine
-    const imageUrl = result.secure_url;
+    // Caricamento su Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(imageurl, {
+      folder: "services", // Facoltativo: specifica una cartella
+    });
 
-    // Step 2: Salva il link nel database
+    // Salva il servizio nel database
     const query = `
       INSERT INTO servizio (titolo, descrizione, prezzo, imageurl)
       VALUES ($1, $2, $3, $4)
+      RETURNING *;
     `;
-    await pool.query(query, [titolo, descrizione, prezzo, imageUrl]);
+    const values = [titolo, descrizione, prezzo, uploadResult.secure_url];
 
-    res.status(201).send("Servizio caricato con successo!");
+    const { rows } = await pool.query(query, values);
+
+    res.status(201).json({
+      message: "Servizio aggiunto con successo!",
+      service: rows[0],
+    });
   } catch (error) {
-    console.error("Errore durante il caricamento:", error);
+    console.error("Errore durante l'aggiunta del servizio:", error);
     res.status(500).send("Errore del server.");
   }
 });
