@@ -14,6 +14,7 @@ const app = express();
 const port = 3000;
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME, // Sostituisci con il tuo Cloud Name
   api_key: process.env.API_KEY,       // Sostituisci con la tua API Key
@@ -223,6 +224,41 @@ app.post("/addService", async (req, res) => {
   } catch (error) {
     console.error("Errore durante l'aggiunta del servizio:", error);
     res.status(500).send("Errore del server.");
+  }
+});
+
+app.post("/addServiceNoImage", async (req, res) => {
+  try {
+
+    const payload = { title, description, price, sellerId } = req.body;
+
+    console.log(payload)
+    
+    // Validazione dei dati
+    // if (titolo || descrizione || prezzo || sellerId) {
+    //   return res.status(400).send("Tutti i campi sono obbligatori");
+    // }
+
+
+    // Salva il servizio nel database
+    const query = `
+      INSERT INTO servizio (titolo, descrizione, prezzo, idvenditore, image)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;
+    `;
+    const values = [title, description, price, sellerId, null];
+
+    console.log(values);
+
+    const { rows } = await pool.query(query, values);
+
+    res.status(201).json({
+      message: "Servizio aggiunto con successo!",
+      service: rows[0],
+    });
+  } catch (error) {
+    console.error("Errore durante l'aggiunta del servizio:", error);
+    res.status(500).send("Errore del server."+ error);
   }
 });
 

@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("submitService").addEventListener("click", async () => {
-    const serviceImage = document.getElementById('serviceImage').value;
+    // const serviceImage = document.getElementById('serviceImage').value;
     const serviceTitle = document.getElementById('serviceTitle').value;
     const serviceDescription = document.getElementById('serviceDescription').value;
     const servicePrice = document.getElementById('servicePrice').value;
@@ -115,16 +115,18 @@ document.getElementById("submitService").addEventListener("click", async () => {
 
     // Creazione del payload
     const serviceData = {
-        imageurl: serviceImage,
+        // imageurl: serviceImage,
         title: serviceTitle,
         description: serviceDescription,
         price: parseFloat(servicePrice),
         sellerId: idVenditore
     };
 
+    console.log(serviceData)
+    
     try {
         // Invio dei dati al backend
-        const response = await fetch('/addService', {
+        const response = await fetch('/addServiceNoImage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
