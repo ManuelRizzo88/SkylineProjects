@@ -5,7 +5,6 @@ const { Pool } = require("pg");
 const path = require("path");
 const crypto = require("crypto");
 const { error } = require("console");
-const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 
@@ -28,8 +27,6 @@ cloudinary.config({
 module.exports = cloudinary;
 // Configura CORS
 app.use(cors());
-
-app.use(fileUpload({ useTempFiles: true }));
 
 app.use(express.static(path.join(__dirname, "html")));
 app.use("/css", express.static(path.join(__dirname, "css")));

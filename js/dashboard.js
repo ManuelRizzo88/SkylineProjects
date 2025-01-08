@@ -105,6 +105,7 @@ document.getElementById("submitService").addEventListener("click", async () => {
     const serviceDescription = document.getElementById("serviceDescription").value;
     const servicePrice = document.getElementById("servicePrice").value;
 
+    const user = JSON.parse(localStorage.getItem("user"));
     // Log per debug
     console.log("File:", serviceImage);
     console.log("Titolo:", serviceTitle);
@@ -123,6 +124,7 @@ document.getElementById("submitService").addEventListener("click", async () => {
     formData.append("title", serviceTitle);
     formData.append("description", serviceDescription);
     formData.append("price", servicePrice);
+    formData.append("sellerId", user.idvenditore)
 
     // Debug: verifica il contenuto del FormData
     for (let [key, value] of formData.entries()) {

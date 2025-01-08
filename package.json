@@ -4,7 +4,8 @@
   "description": "Benvenuto in **Skyline Project**, il sistema di gestione per freelance che ti aiuta a organizzare progetti, task, clienti e fatture in modo semplice ed efficiente. Tieni traccia dello stato di ogni progetto e dei task associati, monitora scadenze, ore lavorate e gestisci i pagamenti in tempo reale.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,6 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "express-fileupload": "^1.5.1",
     "multer": "^1.4.5-lts.1",
     "path": "^0.12.7",
     "pg": "^8.13.1"
