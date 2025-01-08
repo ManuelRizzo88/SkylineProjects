@@ -100,51 +100,53 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("submitService").addEventListener("click", async () => {
-    // const serviceImage = document.getElementById('serviceImage').value;
-    const serviceTitle = document.getElementById('serviceTitle').value;
-    const serviceDescription = document.getElementById('serviceDescription').value;
-    const servicePrice = document.getElementById('servicePrice').value;
+    const serviceImage = document.getElementById("serviceImage").files[0];
+    const serviceTitle = document.getElementById("serviceTitle").value;
+    const serviceDescription = document.getElementById("serviceDescription").value;
+    const servicePrice = document.getElementById("servicePrice").value;
 
-    // Recupero idVenditore dal localStorage
-    const user = JSON.parse(localStorage.getItem("user"));
-    const idVenditore = user.idvenditore;
-    if (!idVenditore) {
-        alert("ID venditore non trovato. Assicurati di aver effettuato l'accesso.");
-        return;
+    // Log per debug
+    console.log("File:", serviceImage);
+    console.log("Titolo:", serviceTitle);
+    console.log("Descrizione:", serviceDescription);
+    console.log("Prezzo:", servicePrice);
+
+    // Verifica se i dati sono validi
+    if (!serviceImage || !serviceTitle || !serviceDescription || !servicePrice) {
+    alert("Tutti i campi sono obbligatori!");
+    return;
     }
 
-    // Creazione del payload
-    const serviceData = {
-        // imageurl: serviceImage,
-        title: serviceTitle,
-        description: serviceDescription,
-        price: parseFloat(servicePrice),
-        sellerId: idVenditore
-    };
+    // Costruzione del FormData
+    const formData = new FormData();
+    formData.append("image", serviceImage);
+    formData.append("title", serviceTitle);
+    formData.append("description", serviceDescription);
+    formData.append("price", servicePrice);
 
-    console.log(serviceData)
-    
+    // Debug: verifica il contenuto del FormData
+    for (let [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+    }
+
     try {
-        // Invio dei dati al backend
-        const response = await fetch('/addServiceNoImage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(serviceData)
-        });
+    const response = await fetch("/addService", {
+        method: "POST",
+        body: formData, // Nessun 'Content-Type' manuale!
+    });
 
-        if (response.ok) {
-            alert('Servizio aggiunto con successo!');
-            document.getElementById('serviceForm').reset();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addServiceModal'));
-            modal.hide();
-        } else {
-            alert('Errore durante l\'aggiunta del servizio. Riprova.');
-        }
+    if (response.ok) {
+        alert("Servizio aggiunto con successo!");
+        document.getElementById("serviceForm").reset();
+    } else {
+        const errorText = await response.text();
+        alert(`Errore durante l'aggiunta del servizio: ${errorText}`);
+    }
     } catch (error) {
-        console.error('Errore:', error);
-        alert('Si è verificato un errore durante la connessione al server.');
+    console.error("Errore:", error);
+    alert("Si è verificato un errore durante la connessione al server.");
     }
 });
+
+
 

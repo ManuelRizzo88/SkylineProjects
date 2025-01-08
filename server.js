@@ -7,11 +7,15 @@ const crypto = require("crypto");
 const { error } = require("console");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
 
 require("dotenv").config();
 
 const app = express();
 const port = 3000;
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
@@ -191,38 +195,40 @@ app.get("/dashboard", async (req, res) => {
   }
 });
 
-app.post("/addService", async (req, res) => {
+app.post("/addService", upload.single("image"), async (req, res) => {
   try {
-    const { titolo, descrizione, prezzo, imageurl } = req.body;
+    const { title, description, price, sellerId } = req.body;
 
-    // Validazione dei dati
-    if (!titolo || !descrizione || !prezzo || !req.files || !req.files.image) {
-      return res.status(400).send("Tutti i campi sono obbligatori, inclusa un'immagine.");
+    // Controlla che tutti i campi siano presenti
+    if (!title || !description || !price || !sellerId) {
+      return res.status(400).send("Tutti i campi sono obbligatori.");
     }
 
-    const file = req.files.image;
+    // Controlla che un'immagine sia stata caricata
+    if (!req.file) {
+      return res.status(400).send("L'immagine è obbligatoria.");
+    }
 
-    // Caricamento su Cloudinary
-    const uploadResult = await cloudinary.uploader.upload(imageurl, {
-      folder: "services", // Facoltativo: specifica una cartella
-    });
+    // Ottieni il buffer dell'immagine
+    const imageBuffer = req.file.buffer;
 
-    // Salva il servizio nel database
+    // Query per inserire i dati nel database
     const query = `
-      INSERT INTO servizio (titolo, descrizione, prezzo, imageurl)
-      VALUES ($1, $2, $3, $4)
-      RETURNING *;
+      INSERT INTO servizio (titolo, descrizione, prezzo, image, idvenditore)
+      VALUES ($1, $2, $3, $4, $5)
     `;
-    const values = [titolo, descrizione, prezzo, uploadResult.secure_url];
 
-    const { rows } = await pool.query(query, values);
+    await pool.query(query, [
+      title,
+      description,
+      parseFloat(price),
+      imageBuffer,
+      sellerId,
+    ]);
 
-    res.status(201).json({
-      message: "Servizio aggiunto con successo!",
-      service: rows[0],
-    });
+    res.status(200).send("Servizio caricato con successo!");
   } catch (error) {
-    console.error("Errore durante l'aggiunta del servizio:", error);
+    console.error("Errore durante il caricamento del servizio:", error);
     res.status(500).send("Errore del server.");
   }
 });
