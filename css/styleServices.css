@@ -373,6 +373,14 @@
         background-repeat: no-repeat;
     }
 
+    .card-img img
+    {
+        height: 100%;
+        width: 100%;
+        border-radius: 0.5rem;
+        
+    }
+
     .card-info {
         padding-top: 10%;
     }
