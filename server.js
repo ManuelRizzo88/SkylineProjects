@@ -5,7 +5,6 @@ const { Pool } = require("pg");
 const path = require("path");
 const crypto = require("crypto");
 const { error } = require("console");
-const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 
@@ -29,8 +28,6 @@ module.exports = cloudinary;
 // Configura CORS
 app.use(cors());
 
-app.use(fileUpload({ useTempFiles: true }));
-
 app.use(express.static(path.join(__dirname, "html")));
 app.use("/css", express.static(path.join(__dirname, "css")));
 app.use("/js", express.static(path.join(__dirname, "js")));
@@ -49,33 +46,43 @@ app.get("/", (req, res) => {
 // API per ottenere servizi
 app.get("/services", async (req, res) => {
   try {
-    // Recupero dei dati dal database
-    const { rows } = await pool.query("SELECT * FROM servizio;");
+    const query = `SELECT titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio`;
+    const result = await pool.query(query);
 
-    // Modifica i dati per convertire BYTEA (image) in Base64
-    const services = rows.map(service => {
-      return {
-        ...service,
-        image: service.image ? `data:image/png;base64,${service.image.toString("base64")}` : null
-      };
-    });
+    const services = result.rows.map(row => ({
+      title: row.titolo,
+      description: row.descrizione,
+      price: row.prezzo,
+      image: row.image ? `data:image/png;base64,${row.image}` : null, // Controlla che image non sia null
+      sellerId: row.idvenditore
+    }));
 
-    // Invio della risposta JSON con le immagini convertite
-    res.json(services);
+    res.status(200).json(services);
   } catch (error) {
-    console.error("Errore nel recupero dei servizi:", error);
-    res.status(500).send("Errore del server");
+    console.error("Errore durante il recupero dei servizi:", error);
+    res.status(500).send("Errore del server.");
   }
 });
 
 
+
 app.get("/topservices", async (req, res) => {
   try {
-    const { rows } = await pool.query("SELECT * FROM servizio LIMIT 20;");
-    res.json(rows);
+    const query = `SELECT titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio LIMIT 20`;
+    const result = await pool.query(query);
+
+    const services = result.rows.map(row => ({
+      title: row.titolo,
+      description: row.descrizione,
+      price: row.prezzo,
+      image: row.image ? `data:image/png;base64,${row.image}` : null, // Controlla che image non sia null
+      sellerId: row.idvenditore
+    }));
+
+    res.status(200).json(services);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Errore del server");
+    console.error("Errore durante il recupero dei servizi:", error);
+    res.status(500).send("Errore del server.");
   }
 });
 
