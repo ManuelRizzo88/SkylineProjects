@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.className = "card";
       card.onclick = function()
       {
-        window.location.href = `serviceDetails.html?ID=${service.idservizio}`
+        window.location.href = `serviceDetails.html?ID=${service.idservice}`
       }
 
       card.innerHTML = `

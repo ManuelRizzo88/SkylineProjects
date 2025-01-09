@@ -46,10 +46,11 @@ app.get("/", (req, res) => {
 // API per ottenere servizi
 app.get("/services", async (req, res) => {
   try {
-    const query = `SELECT titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio`;
+    const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio`;
     const result = await pool.query(query);
 
     const services = result.rows.map(row => ({
+      idservice: row.idservizio,
       title: row.titolo,
       description: row.descrizione,
       price: row.prezzo,
@@ -64,6 +65,27 @@ app.get("/services", async (req, res) => {
   }
 });
 
+app.get("/services/:id", async (req, res) => {
+  const idS = req.params.id
+  try {
+    const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio WHERE idservizio = $1`;
+    const result = await pool.query(query,[idS]);
+
+    const services = result.rows.map(row => ({
+      idservice: row.idservizio,
+      title: row.titolo,
+      description: row.descrizione,
+      price: row.prezzo,
+      image: row.image ? `data:image/png;base64,${row.image}` : null, // Controlla che image non sia null
+      sellerId: row.idvenditore
+    }));
+
+    res.status(200).json(services);
+  } catch (error) {
+    console.error("Errore durante il recupero dei servizi:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
 
 
 app.get("/topservices", async (req, res) => {

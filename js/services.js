@@ -10,7 +10,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       services.forEach((service) => {
         const card = document.createElement("div");
         card.className = "card";
-  
+        
+        card.onclick = function()
+      {
+        window.location.href = `serviceDetails.html?ID=${service.idservice}`
+      }
+
         card.innerHTML = `
           <div class="card-img""><img src="${service.image}"></div>
           <div class="card-info">
