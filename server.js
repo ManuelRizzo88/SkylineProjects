@@ -5,6 +5,7 @@ const { Pool } = require("pg");
 const path = require("path");
 const crypto = require("crypto");
 const { error } = require("console");
+const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 
 require("dotenv").config();
@@ -12,13 +13,20 @@ require("dotenv").config();
 const app = express();
 const port = 3000;
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME, // Sostituisci con il tuo Cloud Name
+  api_key: process.env.API_KEY,       // Sostituisci con la tua API Key
+  api_secret: process.env.API_SECRET  // Sostituisci con il tuo API Secret
+});   
+
+module.exports = cloudinary;
 // Configura CORS
 app.use(cors());
-// Configurazione Multer per gestire i file
-const storage = multer.memoryStorage();
-const upload = multer();
 
 app.use(express.static(path.join(__dirname, "html")));
 app.use("/css", express.static(path.join(__dirname, "css")));
@@ -38,33 +46,43 @@ app.get("/", (req, res) => {
 // API per ottenere servizi
 app.get("/services", async (req, res) => {
   try {
-    // Recupero dei dati dal database
-    const { rows } = await pool.query("SELECT * FROM servizio;");
+    const query = `SELECT titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio`;
+    const result = await pool.query(query);
 
-    // Modifica i dati per convertire BYTEA (image) in Base64
-    const services = rows.map(service => {
-      return {
-        ...service,
-        image: service.image ? `data:image/png;base64,${service.image.toString("base64")}` : null
-      };
-    });
+    const services = result.rows.map(row => ({
+      title: row.titolo,
+      description: row.descrizione,
+      price: row.prezzo,
+      image: row.image ? `data:image/png;base64,${row.image}` : null, // Controlla che image non sia null
+      sellerId: row.idvenditore
+    }));
 
-    // Invio della risposta JSON con le immagini convertite
-    res.json(services);
+    res.status(200).json(services);
   } catch (error) {
-    console.error("Errore nel recupero dei servizi:", error);
-    res.status(500).send("Errore del server");
+    console.error("Errore durante il recupero dei servizi:", error);
+    res.status(500).send("Errore del server.");
   }
 });
 
 
+
 app.get("/topservices", async (req, res) => {
   try {
-    const { rows } = await pool.query("SELECT * FROM servizio LIMIT 20;");
-    res.json(rows);
+    const query = `SELECT titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio LIMIT 20`;
+    const result = await pool.query(query);
+
+    const services = result.rows.map(row => ({
+      title: row.titolo,
+      description: row.descrizione,
+      price: row.prezzo,
+      image: row.image ? `data:image/png;base64,${row.image}` : null, // Controlla che image non sia null
+      sellerId: row.idvenditore
+    }));
+
+    res.status(200).json(services);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Errore del server");
+    console.error("Errore durante il recupero dei servizi:", error);
+    res.status(500).send("Errore del server.");
   }
 });
 
@@ -184,24 +202,76 @@ app.get("/dashboard", async (req, res) => {
   }
 });
 
-app.post("/AddService", upload.single("image"), async (req, res) => {
-  const { title, description, price, sellerId } = req.body;
-  const imageBuffer =req.file?.buffer;
-
-  if (!title || !description || !price || !sellerId || !imageBuffer) {
-      return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
-  }
-
+app.post("/addService", upload.single("image"), async (req, res) => {
   try {
-      const query = `
-          INSERT INTO servizio (titolo, descrizione, prezzo, image, idvenditore)
-          VALUES ($1, $2, $3, $4, $5)
-      `;
-      await pool.query(query, [title, description, price, imageBuffer, sellerId]);
-      res.status(200).json({ message: "Servizio aggiunto con successo!" });
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Errore nel database" });
+    const { title, description, price, sellerId } = req.body;
+
+    // Controlla che tutti i campi siano presenti
+    if (!title || !description || !price || !sellerId) {
+      return res.status(400).send("Tutti i campi sono obbligatori.");
+    }
+
+    // Controlla che un'immagine sia stata caricata
+    if (!req.file) {
+      return res.status(400).send("L'immagine è obbligatoria.");
+    }
+
+    // Ottieni il buffer dell'immagine
+    const imageBuffer = req.file.buffer;
+
+    // Query per inserire i dati nel database
+    const query = `
+      INSERT INTO servizio (titolo, descrizione, prezzo, image, idvenditore)
+      VALUES ($1, $2, $3, $4, $5)
+    `;
+
+    await pool.query(query, [
+      title,
+      description,
+      parseFloat(price),
+      imageBuffer,
+      sellerId,
+    ]);
+
+    res.status(200).send("Servizio caricato con successo!");
+  } catch (error) {
+    console.error("Errore durante il caricamento del servizio:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
+
+app.post("/addServiceNoImage", async (req, res) => {
+  try {
+
+    const payload = { title, description, price, sellerId } = req.body;
+
+    console.log(payload)
+    
+    // Validazione dei dati
+    // if (titolo || descrizione || prezzo || sellerId) {
+    //   return res.status(400).send("Tutti i campi sono obbligatori");
+    // }
+
+
+    // Salva il servizio nel database
+    const query = `
+      INSERT INTO servizio (titolo, descrizione, prezzo, idvenditore, image)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;
+    `;
+    const values = [title, description, price, sellerId, null];
+
+    console.log(values);
+
+    const { rows } = await pool.query(query, values);
+
+    res.status(201).json({
+      message: "Servizio aggiunto con successo!",
+      service: rows[0],
+    });
+  } catch (error) {
+    console.error("Errore durante l'aggiunta del servizio:", error);
+    res.status(500).send("Errore del server."+ error);
   }
 });
 
