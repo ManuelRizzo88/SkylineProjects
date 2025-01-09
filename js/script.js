@@ -57,9 +57,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     services.forEach((service) => {
       const card = document.createElement("div");
       card.className = "card";
+      card.onclick = function()
+      {
+        window.location.href = `serviceDetails.html?ID=${service.idservizio}`
+      }
 
       card.innerHTML = `
-       <div class="card-img"><img src="${service.image}"></div>
+      <div class="card-img"><img src="${service.image}"></div>
         <div class="card-info">
           <p class="text-title">${service.title}</p>
           <p class="text-body">${service.description}</p>

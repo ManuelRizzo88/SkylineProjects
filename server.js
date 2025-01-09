@@ -68,10 +68,11 @@ app.get("/services", async (req, res) => {
 
 app.get("/topservices", async (req, res) => {
   try {
-    const query = `SELECT titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio LIMIT 20`;
+    const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio LIMIT 20`;
     const result = await pool.query(query);
 
     const services = result.rows.map(row => ({
+      idservice: row.idservizio,
       title: row.titolo,
       description: row.descrizione,
       price: row.prezzo,
@@ -138,8 +139,9 @@ app.post("/login", async (req, res) => {
 
     console.log(userQuery.rows[0]);
 
-
+console.log(user)
     if (!user) {
+      console.log("No Utente")
       return res.status(401).json({ error: "Credenziali non valide"+ error.message });
     }
 
