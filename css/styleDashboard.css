@@ -414,3 +414,10 @@ body:not(.dark-theme) {
 {
   background-color: rgb(23, 206, 23);
 }
+
+.modal-content
+{
+  color:black;
+  background: linear-gradient(to bottom, #F4D35E, #71c7a6);
+  border: none;
+}

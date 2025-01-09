@@ -11,7 +11,7 @@
 </head>
 <body>
     
-   
+    
     <div class="loader" id="loadingScreen">
         <span class="bar"></span>
         <span class="bar"></span>
@@ -58,23 +58,23 @@
     <div class="main-content">
         <!-- Sidebar -->
         <div class="sidebar">
-          <button class="sidebar-button active">Overview</button>
-          <button class="sidebar-button" onclick="window.location.href='orders.html'">Orders</button>
-          <button class="sidebar-button">Team Management</button>
-          <button class="sidebar-button">Button</button>
-          <button class="sidebar-button">Button</button>
-          <button class="sidebar-button">Button</button>
-          <button class="sidebar-button service" data-bs-toggle="modal" data-bs-target="#addServiceModal"><i class="fas fa-plus"></i> Aggiungi Servizio</button>
+            <button class="sidebar-button active">Overview</button>
+            <button class="sidebar-button" onclick="window.location.href='orders.html'">Orders</button>
+            <button class="sidebar-button">Team Management</button>
+            <button class="sidebar-button">Button</button>
+            <button class="sidebar-button">Button</button>
+            <button class="sidebar-button">Button</button>
+            <button class="sidebar-button service" data-bs-toggle="modal" data-bs-target="#addServiceModal"><i class="fas fa-plus"></i> Aggiungi Servizio</button>
         </div>
     
         <!-- Area principale -->
         <div class="dashboard">
             <div class="graph">
-              <h3>Grafico Andamento Vendite</h3>
-              <canvas id="venditeChart"></canvas>
+                <h3>Grafico Andamento Vendite</h3>
+                <canvas id="venditeChart"></canvas>
             </div>
             <div class="black-box"></div>
-          </div>
+            </div>
         </div>
         <!-- Modal -->
         <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
@@ -105,8 +105,8 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                        <button type="button" class="btn btn-primary" id="submitService">Invia</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: transparent; color: black; border: none;">Chiudi</button>
+                        <button type="button" class="btn btn-primary" id="submitService" style="background-color: transparent; color: black; border: none;">Invia</button>
                     </div>
                 </div>
             </div>
