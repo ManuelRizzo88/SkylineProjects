@@ -67,6 +67,7 @@ app.get("/services", async (req, res) => {
 
 app.get("/services/:id", async (req, res) => {
   const idS = req.params.id
+  console.log(idS)
   try {
     const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio WHERE idservizio = $1`;
     const result = await pool.query(query,[idS]);

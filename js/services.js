@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         card.onclick = function()
       {
-        window.location.href = `serviceDetails.html?ID=${service.idservice}`
+        window.location.href = `serviceDetails.html?id=${service.idservice}`
       }
 
         card.innerHTML = `
