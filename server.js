@@ -72,16 +72,28 @@ app.get("/services/:id", async (req, res) => {
     const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio WHERE idservizio = $1`;
     const result = await pool.query(query,[idS]);
 
-    const services = result.rows.map(row => ({
-      idservice: row.idservizio,
-      title: row.titolo,
-      description: row.descrizione,
-      price: row.prezzo,
-      image: row.image ? `data:image/png;base64,${row.image}` : null, // Controlla che image non sia null
-      sellerId: row.idvenditore
-    }));
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Servizio non trovato' });
+  }
 
-    res.status(200).json(services);
+  // Invia il servizio trovato come risposta
+  const service = result.rows[0];
+
+  // Converti i dati dell'immagine (se in formato bytea) in base64
+  if (service.image) {
+      service.image = `${service.image.toString('base64')}`;
+  }
+
+  res.json(service);
+    // const services = result.rows.map(row => ({
+    //   idservice: row.idservizio,
+    //   title: row.titolo,
+    //   description: row.descrizione,
+    //   price: row.prezzo,
+    //   image: row.image ? `data:image/png;base64,${row.image}` : null, // Controlla che image non sia null
+    //   sellerId: row.idvenditore
+    // }));
+
   } catch (error) {
     console.error("Errore durante il recupero dei servizi:", error);
     res.status(500).send("Errore del server.");
