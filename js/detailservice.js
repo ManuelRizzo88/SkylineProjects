@@ -13,8 +13,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         const service = await response.json();
 
+
+        console.log(service)
+
         // Popola la pagina con i dettagli del servizio
-        document.getElementById("servicedetails-title").innerHTML = `${service.title}`;
+        document.getElementById("servicedetails-title").textContent = `${service.title}`;
         document.getElementById("servicedetails-description").innerHTML = `${service.description}`;
         document.getElementById("servicedetails-price").innerHTML = `Prezzo: ${service.price}€`;
         document.getElementById("servicedetails-image").src = `data:image/jpeg;base64,${service.image}`;
