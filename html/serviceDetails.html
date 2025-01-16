@@ -95,15 +95,31 @@
       </div>
     </nav>
 
+    <div class="container">
+      <!-- Immagine -->
+      <div class="image-container">
+          <img id="servicedetails-image" src="" alt="Img" />
+      </div>
+  
+      <!-- Dettagli -->
+      <div class="details-container">
+          <h1 id="servicedetails-title">Titolo del Servizio</h1>
+          <p id="servicedetails-description">Descrizione del servizio</p>
+          <p class="price" id="servicedetails-price">Prezzo: 0.00€</p>
+          <button class="order-button" id="OpenModalBTN">Ordina</button>
 
-    <div class="main-content details-content">
-      <h1 id="servicedetails-title">Titolo del Servizio</h1>
-      <img id="servicedetails-image" src="" alt="Immagine del Servizio">
-      <p>Descrizione</p>
-      <p id="servicedetails-description">Descrizione del Servizio</p>
-      <p id="servicedetails-price">Prezzo</p> 
-    </div>
+      </div>
+  </div>
 
+<!-- Modal -->
+<div id="descriptionModal" class="modal">
+  <div class="modal-content">
+      <span class="close-button" id="CloseModalBTN">&times;</span>
+      <h2>Inserisci la descrizione</h2>
+      <textarea id="orderDescription" placeholder="Descrivi cosa desideri ottenere da questo servizio..." rows="5"></textarea>
+      <button class="submit-button" id="conferma-ordine">Conferma</button>
+  </div>
+</div>
     <!--Inizio Footer-->
     <footer class="custom-footer">
         <div class="footer-top">

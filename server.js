@@ -189,6 +189,7 @@ console.log(user)
 
     res.status(200).json({
       idvenditore: user.idvenditore,
+      idcliente: user.idcliente,
       username: user.name,
       email: user.email,
     });
@@ -309,6 +310,43 @@ app.post("/addServiceNoImage", async (req, res) => {
   } catch (error) {
     console.error("Errore durante l'aggiunta del servizio:", error);
     res.status(500).send("Errore del server."+ error);
+  }
+});
+app.post('/orders', async (req, res) => {
+  const {
+      descrizione,
+      stato,
+      scadenza,
+      idVenditore,
+      idCliente,
+      prezzo,
+      fattura
+  } = req.body;
+
+  // Controllo che tutti i campi richiesti siano presenti
+  if (!descrizione || !stato || !scadenza || !idVenditore || !idCliente || !prezzo) {
+      return res.status(400).json({ error: "Tutti i campi obbligatori devono essere compilati." });
+  }
+
+  try {
+      const query = `
+          INSERT INTO Ordine (Descrizione, Stato, Scadenza, IdVenditore, IdCliente, Prezzo, Fattura)
+          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          RETURNING *;
+      `;
+
+      const values = [descrizione, stato, scadenza, idVenditore, idCliente, prezzo, fattura || null];
+
+      const result = await pool.query(query, values);
+      const newOrder = result.rows[0];
+
+      res.status(201).json({
+          message: "Ordine creato con successo.",
+          ordine: newOrder
+      });
+  } catch (error) {
+      console.error("Errore durante l'inserimento dell'ordine:", error);
+      res.status(500).json({ error: "Errore interno del server." });
   }
 });
 

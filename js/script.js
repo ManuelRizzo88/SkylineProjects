@@ -123,7 +123,7 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu) {
   dropdownMenu.innerHTML = "";
 
   // Aggiungi l'opzione "Opzioni"
- 
+
   const optionsItem = document.createElement("li");
   const optionsLink = document.createElement("a");
   optionsLink.className = "dropdown-item";
