@@ -350,6 +350,49 @@ app.post('/orders', async (req, res) => {
   }
 });
 
+// Creare un nuovo team
+app.post("/createTeam", async (req, res) => {
+  try {
+    const { name, userId } = req.body;
+
+    // Controlla che tutti i campi siano presenti
+    if (!name || !userId) {
+      return res.status(400).send("Tutti i campi sono obbligatori.");
+    }
+
+    // Controlla che un'immagine sia stata caricata
+    if (!req.file) {
+      return res.status(400).send("Il logo del team è obbligatorio.");
+    }
+
+    // Ottieni il buffer dell'immagine
+
+    // Query per creare il team
+    const createTeamQuery = `
+      INSERT INTO Team (Nome, Logo)
+      VALUES ($1, $2)
+      RETURNING IdTeam
+    `;
+
+    const teamResult = await pool.query(createTeamQuery, [name]);
+    const teamId = teamResult.rows[0].idteam;
+
+    // Imposta il creatore come membro con ruolo "Owner"
+    const addOwnerQuery = `
+      INSERT INTO Teamers (IdTeam, IdUtente, Role)
+      VALUES ($1, $2, $3)
+    `;
+
+    await pool.query(addOwnerQuery, [teamId, userId, "Owner"]);
+
+    res.status(200).send("Team creato con successo!");
+  } catch (error) {
+    console.error("Errore durante la creazione del team:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
+
+
 // Avvia il server
 app.listen(port, () => {
   console.log(`Server avviato su http://localhost:${port}`);

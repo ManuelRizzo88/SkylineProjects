@@ -414,3 +414,26 @@ body:not(.dark-theme) {
 {
   background-color: rgb(23, 206, 23);
 }
+
+#team-container {
+  margin-top: 50px;
+}
+
+#no-team {
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+#no-team p
+{
+    color:#28afb0;
+}
+
+#team-table-container {
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
