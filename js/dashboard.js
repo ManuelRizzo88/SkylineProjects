@@ -1,15 +1,18 @@
-
 // Elementi DOM
 const noTeamSection = document.getElementById("no-team");
-const teamTableContainer = document.getElementById("team-table-container");
-const teamTableBody = document.getElementById("team-table-body");
+const teamTableContainer = document.getElementById("team-section");
+const teamTableBody = document.getElementById("team-members-table");
 const createTeamBtn = document.getElementById("create-team-btn");
 const deleteTeamBtn = document.getElementById("delete-team-btn");
 const teamName = document.getElementById("team-name");
+
+// Inizializzazione
+document.addEventListener("DOMContentLoaded",fetchTeam)
+
 // Funzione per ottenere i dati di vendita mensili dal server
 async function fetchVenditeMensili(venditoreId) {
     try {
-        const response = await fetch(`http://localhost:3000/vendite-mensili/${venditoreId}`); // Cambia con il tuo endpoint
+        const response = await fetch(`/vendite-mensili/${venditoreId}`); // Cambia con il tuo endpoint
         if (!response.ok) {
             throw new Error(`Errore durante il fetch: ${response.statusText}`);
         }
@@ -161,33 +164,45 @@ document.getElementById("submitService").addEventListener("click", async () => {
 
 // Funzione per ottenere il team dal server
 async function fetchTeam() {
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+  const team = JSON.parse(localStorage.getItem("team"));
 
-    if (data.name) {
-      renderTeam(data.name);
+  if (!team) {
+    renderNoTeam(); // Se non c'è un team salvato
+    return;
+  }
+
+  try {
+    const response = await fetch(`/getTeamMembers/${team.teamid}`);
+    const members = await response.json(); // Supponiamo che l'API restituisca un array di membri
+
+    if (members.length > 0) {
+      renderTeam(members); // Passiamo direttamente i membri alla funzione di rendering
     } else {
-      renderNoTeam();
+      renderNoTeam(); // Se il team esiste ma non ha membri
     }
   } catch (error) {
     console.error("Errore durante il fetch del team:", error);
   }
 }
 
+
 // Funzione per creare un team
 async function createTeam() {
   const teamNamePrompt = prompt("Inserisci il nome del nuovo team:");
+
+  const user = JSON.parse(localStorage.getItem("user"));
   if (!teamNamePrompt) return;
 
   try {
-    const response = await fetch(apiUrl, {
+    const response = await fetch("/createTeam", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: teamNamePrompt }),
+      body: JSON.stringify({ name: teamNamePrompt, userId: user.idu }),
     });
 
     if (response.ok) {
+      const team = await response.json()
+      localStorage.setItem("team",JSON.stringify(team))
       renderTeam(teamNamePrompt);
     } else {
       alert("Errore durante la creazione del team.");
@@ -213,21 +228,30 @@ async function deleteTeam() {
   }
 }
 
-// Funzione per visualizzare il team
-function renderTeam(name) {
+function renderTeam(members) {
   noTeamSection.classList.add("d-none");
   teamTableContainer.classList.remove("d-none");
-  teamName.textContent = name;
 
-  teamTableBody.innerHTML = `
+  // Ottieni il nome del team dal primo membro (presupponendo che ogni membro abbia un riferimento al team)
+  const team = members[0].teamName; // Assumi che `teamName` sia una proprietà restituita dall'API
+  teamName.textContent = team;
+
+  // Popola la tabella con i membri del team
+  teamTableBody.innerHTML = members
+    .map(
+      (member, index) => `
     <tr>
-      <td>1</td>
-      <td>${name}</td>
+      <td>${index + 1}</td>
+      <td>${member.name}</td>
+      <td>${member.role}</td>
       <td>
-        <button class="btn btn-danger btn-sm" onclick="deleteTeam()">Rimuovi</button>
+        <button class="btn btn-danger btn-sm" onclick="removeMember(${member.id})">Rimuovi</button>
       </td>
-    </tr>`;
+    </tr>`
+    )
+    .join("");
 }
+
 
 // Funzione per visualizzare la sezione senza team
 function renderNoTeam() {
@@ -239,8 +263,7 @@ function renderNoTeam() {
 createTeamBtn.addEventListener("click", createTeam);
 deleteTeamBtn.addEventListener("click", deleteTeam);
 
-// Inizializzazione
-fetchTeam();
+
 
 
 

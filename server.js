@@ -188,6 +188,7 @@ console.log(user)
     }
 
     res.status(200).json({
+      idu: user.idu,
       idvenditore: user.idvenditore,
       idcliente: user.idcliente,
       username: user.name,
@@ -355,42 +356,151 @@ app.post("/createTeam", async (req, res) => {
   try {
     const { name, userId } = req.body;
 
-    // Controlla che tutti i campi siano presenti
+    // Verifica campi obbligatori
     if (!name || !userId) {
       return res.status(400).send("Tutti i campi sono obbligatori.");
     }
 
-    // Controlla che un'immagine sia stata caricata
-    if (!req.file) {
-      return res.status(400).send("Il logo del team è obbligatorio.");
-    }
-
-    // Ottieni il buffer dell'immagine
-
     // Query per creare il team
     const createTeamQuery = `
-      INSERT INTO Team (Nome, Logo)
-      VALUES ($1, $2)
+      INSERT INTO Team (teamname)
+      VALUES ($1)
       RETURNING IdTeam
     `;
-
     const teamResult = await pool.query(createTeamQuery, [name]);
     const teamId = teamResult.rows[0].idteam;
 
-    // Imposta il creatore come membro con ruolo "Owner"
+    // Aggiungi l'utente come Owner del team nella tabella Teamers
     const addOwnerQuery = `
-      INSERT INTO Teamers (IdTeam, IdUtente, Role)
+      INSERT INTO Teamers (idteam, idutente, Role)
       VALUES ($1, $2, $3)
     `;
-
     await pool.query(addOwnerQuery, [teamId, userId, "Owner"]);
-
-    res.status(200).send("Team creato con successo!");
+    
+    res.status(201).json({
+      teamid:teamId
+    });
   } catch (error) {
     console.error("Errore durante la creazione del team:", error);
+    res.status(500).send("Errore del server." + error);
+  }
+});
+
+app.post("/inviteToTeam", async (req, res) => {
+  try {
+    const { teamId, userId, role } = req.body;
+
+    // Verifica campi obbligatori
+    if (!teamId || !userId || !role) {
+      return res.status(400).send("Tutti i campi sono obbligatori.");
+    }
+
+    // Verifica che il team esista
+    const teamExistsQuery = `SELECT * FROM Team WHERE IdTeam = $1`;
+    const teamExistsResult = await pool.query(teamExistsQuery, [teamId]);
+    if (teamExistsResult.rows.length === 0) {
+      return res.status(404).send("Il team specificato non esiste.");
+    }
+
+    // Inserisci l'invito nella tabella Invitations
+    const createInvitationQuery = `
+      INSERT INTO Invitations (IdTeam, IdUtente, Role)
+      VALUES ($1, $2, $3)
+    `;
+    await pool.query(createInvitationQuery, [teamId, userId, role]);
+
+    res.status(200).send("Invito inviato con successo!");
+  } catch (error) {
+    console.error("Errore durante l'invio dell'invito:", error);
     res.status(500).send("Errore del server.");
   }
 });
+
+app.post("/respondToInvitation", async (req, res) => {
+  try {
+    const { invitationId, response } = req.body; // 'response' può essere 'accepted' o 'rejected'
+
+    // Verifica campi obbligatori
+    if (!invitationId || !response) {
+      return res.status(400).send("Tutti i campi sono obbligatori.");
+    }
+
+    // Ottieni i dettagli dell'invito
+    const getInvitationQuery = `SELECT * FROM Invitations WHERE Id = $1`;
+    const invitationResult = await pool.query(getInvitationQuery, [invitationId]);
+    if (invitationResult.rows.length === 0) {
+      return res.status(404).send("Invito non trovato.");
+    }
+
+    const { idteam, idutente, role } = invitationResult.rows[0];
+
+    if (response === "accepted") {
+      // Aggiungi l'utente alla tabella Teamers
+      const addUserToTeamQuery = `
+        INSERT INTO Teamers (IdTeam, IdUtente, Role)
+        VALUES ($1, $2, $3)
+      `;
+      await pool.query(addUserToTeamQuery, [idteam, idutente, role]);
+    }
+
+    // Elimina l'invito
+    const deleteInvitationQuery = `DELETE FROM Invitations WHERE Id = $1`;
+    await pool.query(deleteInvitationQuery, [invitationId]);
+
+    res.status(200).send(`Invito ${response} con successo.`);
+  } catch (error) {
+    console.error("Errore durante la risposta all'invito:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
+
+app.get("/getTeamMembers/:teamId", async (req, res) => {
+  try {
+    const { teamId } = req.params;
+
+    const membersQuery = `
+      SELECT 
+        u.IdU AS id, 
+        u.name AS name, 
+        tm.Role AS role, 
+        t.teamname AS teamName
+      FROM Teamers tm
+      JOIN Utente u ON tm.IdUtente = u.IdU
+      JOIN Team t ON tm.IdTeam = t.IdTeam
+      WHERE tm.IdTeam = $1
+    `;
+
+    const membersResult = await pool.query(membersQuery, [teamId]);
+
+    res.status(200).json(membersResult.rows); // Restituisce un array di membri
+  } catch (error) {
+    console.error("Errore nel recupero dei membri del team:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
+
+app.get("/getNotifications/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).send("userId è obbligatorio.");
+    }
+
+    const query = `
+      SELECT * 
+      FROM Notifications
+      WHERE IdUtente = $1 AND Status = 'unread'
+    `;
+    const result = await pool.query(query, [userId]);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Errore durante il recupero delle notifiche:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
+
 
 
 // Avvia il server
