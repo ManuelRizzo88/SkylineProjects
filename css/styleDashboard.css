@@ -416,7 +416,7 @@ body:not(.dark-theme) {
 }
 
 /* Stile generale per il contenitore della tabella */
-#teamTableContainer {
+#team-section {
   margin-top: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -425,7 +425,7 @@ body:not(.dark-theme) {
 }
 
 /* Titolo del team */
-#teamName {
+#team-name {
   font-size: 1.5rem;
   font-weight: bold;
   color: #333;
@@ -437,6 +437,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin: 10px 0;
+  border-radius: 5px;
 }
 
 /* Stile per le intestazioni della tabella */

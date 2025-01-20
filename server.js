@@ -471,8 +471,9 @@ app.get("/getTeamMembers/:teamId", async (req, res) => {
     `;
 
     const membersResult = await pool.query(membersQuery, [teamId]);
-
+    
     res.status(200).json(membersResult.rows); // Restituisce un array di membri
+    console.table(membersResult.rows)
   } catch (error) {
     console.error("Errore nel recupero dei membri del team:", error);
     res.status(500).send("Errore del server.");
@@ -501,7 +502,23 @@ app.get("/getNotifications/:userId", async (req, res) => {
   }
 });
 
+app.post("/removeMember", async (req, res) => {
+  try {
+    const { memberId } = req.body;
 
+    const deleteQuery = `
+      DELETE FROM Teamers
+      WHERE IdUtente = $1
+    `;
+
+    await pool.query(deleteQuery, [memberId]);
+
+    res.status(200).send("Membro rimosso con successo.");
+  } catch (error) {
+    console.error("Errore durante la rimozione del membro:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
 
 // Avvia il server
 app.listen(port, () => {

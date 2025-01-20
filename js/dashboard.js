@@ -245,13 +245,36 @@ function renderTeam(members) {
       <td>${member.name}</td>
       <td>${member.role}</td>
       <td>
-        <button class="btn btn-danger btn-sm" onclick="removeMember(${member.id})">Rimuovi</button>
-      </td>
+            ${
+              member.role.toLowerCase() === "owner"
+                ? ""
+                : `<button class="btn btn-danger btn-sm" onclick="removeMember(${member.id})">Rimuovi</button>`
+            }
+          </td>
     </tr>`
     )
     .join("");
 }
 
+async function removeMember(memberId) {
+  if (!confirm("Sei sicuro di voler rimuovere questo membro?")) return;
+
+  try {
+    const response = await fetch(`/removeMember`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memberId }),
+    });
+
+    if (response.ok) {
+      fetchTeam(); // Ricarica il team dopo la rimozione
+    } else {
+      alert("Errore durante la rimozione del membro.");
+    }
+  } catch (error) {
+    console.error("Errore durante la rimozione del membro:", error);
+  }
+}
 
 // Funzione per visualizzare la sezione senza team
 function renderNoTeam() {
