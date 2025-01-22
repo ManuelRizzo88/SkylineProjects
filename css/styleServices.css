@@ -361,10 +361,11 @@
         position: relative;
         overflow: visible;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        display: inline-block;
     }
 
     .card-img {
-        height: 70%;
+        height: 55%;
         width: 100%;
         border-radius: 0.5rem;
         transition: 0.3s ease;

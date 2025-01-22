@@ -103,7 +103,7 @@ app.get("/services/:id", async (req, res) => {
 
 app.get("/topservices", async (req, res) => {
   try {
-    const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio LIMIT 20`;
+    const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio LIMIT 5`;
     const result = await pool.query(query);
 
     const services = result.rows.map(row => ({

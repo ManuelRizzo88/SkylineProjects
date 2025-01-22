@@ -5,7 +5,9 @@ const teamTableBody = document.getElementById("team-members-table");
 const createTeamBtn = document.getElementById("create-team-btn");
 const deleteTeamBtn = document.getElementById("delete-team-btn");
 const teamName = document.getElementById("team-name");
+
 document.addEventListener("DOMContentLoaded", ()=>{
+  const user = localStorage.getItem("user");
   if(!user)
   {
     alert("Nessun Utente Autenticato")

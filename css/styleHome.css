@@ -306,7 +306,7 @@ html {
 }
 
 .carousel-content {
-  margin-left: 5%;
+  margin:auto;
   display: flex;
   overflow-x: auto;
   gap: 20px;
@@ -325,7 +325,7 @@ html {
 }
 
 .card-img {
-  height: 70%;
+  height: 55%;
   width: 100%;
   border-radius: 0.5rem;
   transition: 0.3s ease;
