@@ -16,12 +16,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
 })
 // Inizializzazione
 document.addEventListener("DOMContentLoaded",fetchTeam)
+document.addEventListener("DOMContentLoaded",fetchVenditeMensili)
 document.addEventListener("DOMContentLoaded",fetchServices)
+document.addEventListener("DOMContentLoaded",fetchOrders)
+// Creare il grafico all'avvio della pagina
+document.addEventListener("DOMContentLoaded", () => {
+  creaGrafico();
+});
 
 // Funzione per ottenere i dati di vendita mensili dal server
-async function fetchVenditeMensili(venditoreId) {
+async function fetchVenditeMensili() {
+  const user = JSON.parse(localStorage.getItem("user"));
     try {
-        const response = await fetch(`/vendite-mensili/${venditoreId}`); // Cambia con il tuo endpoint
+        const response = await fetch(`/vendite-mensili/${user.idvenditore}`); // Cambia con il tuo endpoint
         if (!response.ok) {
             throw new Error(`Errore durante il fetch: ${response.statusText}`);
         }
@@ -114,10 +121,7 @@ function mostraMessaggioNessunDato(messaggio) {
     ctx.fillText(messaggio, ctx.canvas.width / 2, ctx.canvas.height / 2);
 }
 
-// Creare il grafico all'avvio della pagina
-document.addEventListener("DOMContentLoaded", () => {
-    creaGrafico();
-});
+
 
 document.getElementById("submitService").addEventListener("click", async () => {
     const serviceImage = document.getElementById("serviceImage").files[0];
@@ -353,7 +357,38 @@ async function fetchServices() {
     console.error("Errore durante il fetch dei servizi:", error);
   }
 }
+async function fetchOrders() {
 
+  const user = JSON.parse(localStorage.getItem("user"))
+  try {
+    const response = await fetch(`/getOrders/${user.idvenditore}`);
+    if (response.ok) {
+      const orders = await response.json();
+      console.table(orders); // Logga i servizi per controllo
+      renderServices(orders); // Renderizza i servizi in una tabella o in una lista
+    } else {
+      const message = await response.json();
+      alert(message.message || "Errore durante il recupero dei servizi.");
+    }
+  } catch (error) {
+    console.error("Errore durante il fetch dei servizi:", error);
+  }
+}
+function renderOrders(orders) {
+  const ordersTable = document.getElementById("ordersTableBody");
+  ordersTable.innerHTML = orders
+    .map(
+      (service) => `
+        <tr>
+          <td>${service.idordine}</td>
+          <td>${service.descrizione}</td>
+          <td>${service.stato}</td>
+          <td>${service.scadenza} €</td>
+        </tr>
+      `
+    )
+    .join("");
+}
 // Event listener
 createTeamBtn.addEventListener("click", createTeam);
 deleteTeamBtn.addEventListener("click", deleteTeam);

@@ -62,6 +62,23 @@
         <button class="sidebar-button" onclick="window.location.href='myservices.html'">My Services</button>
         <button class="sidebar-button service" data-bs-toggle="modal" data-bs-target="#addServiceModal"><i class="fas fa-plus"></i> Aggiungi Servizio</button>
         </div>
+
+        <div id="ordersSection">
+            <h2>Seller Orders</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                <!-- I servizi verranno aggiunti dinamicamente qui -->
+                </tbody>
+            </table>
+            </div>
     </div>
 
             <!-- Modal -->
