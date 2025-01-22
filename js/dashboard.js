@@ -5,7 +5,13 @@ const teamTableBody = document.getElementById("team-members-table");
 const createTeamBtn = document.getElementById("create-team-btn");
 const deleteTeamBtn = document.getElementById("delete-team-btn");
 const teamName = document.getElementById("team-name");
-
+document.addEventListener("DOMContentLoaded", ()=>{
+  if(!user)
+  {
+    alert("Nessun Utente Autenticato")
+    window.location.href = "home.html"
+  }
+})
 // Inizializzazione
 document.addEventListener("DOMContentLoaded",fetchTeam)
 
@@ -164,7 +170,7 @@ document.getElementById("submitService").addEventListener("click", async () => {
 
 // Funzione per ottenere il team dal server
 async function fetchTeam() {
-  const team = JSON.parse(localStorage.getItem("team"));
+  const team = JSON.parse(localStorage.getItem("teamId"));
 
   if (!team) {
     renderNoTeam(); // Se non c'è un team salvato
@@ -172,7 +178,7 @@ async function fetchTeam() {
   }
 
   try {
-    const response = await fetch(`/getTeamMembers/${team.teamid}`);
+    const response = await fetch(`/getTeamMembers/${team}`);
     const members = await response.json(); // Supponiamo che l'API restituisca un array di membri
 
     if (members.length > 0) {

@@ -149,6 +149,7 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu) {
   logoutLink.textContent = "Logout";
   logoutLink.onclick = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("teamId");
     alert("Logout eseguito con successo");
     location.reload();
   };
@@ -158,31 +159,42 @@ function populateAuthenticatedNavbar(user, dropdownMenuLink, dropdownMenu) {
 
 // Funzione per il login
 async function login() {
-  
-  const email = document.getElementById("loginEmail").value;
+  const email = document.getElementById("loginEmail").value; 
   const password = document.getElementById("loginPassword").value;
-
   try {
     const response = await fetch("/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),  
+      body: JSON.stringify({ email, password }),
     });
 
     if (response.ok) {
       const user = await response.json();
       localStorage.setItem("user", JSON.stringify(user));
-      alert(`Benvenuto, ${user.username}!`);
+
+      // Recupera l'ID del team
+      const teamResponse = await fetch(`/getUserTeam/${user.idu}`);
+      if (teamResponse.ok) {
+        const { teamId } = await teamResponse.json();
+        localStorage.setItem("teamId", JSON.stringify(teamId));
+      } else {
+        console.warn("Nessun team trovato per l'utente.");
+        localStorage.removeItem("teamId");
+      }
+
+      alert("Login effettuato con successo!");
+      // Redirigi al Team Management o Dashboard
       window.location.href = "home.html";
     } else {
-      const errorData = await response.json();
-      alert(errorData.error || "Credenziali non valide");
+      const errorMessage = await response.text();
+      alert(`Errore durante il login: ${errorMessage}`);
     }
   } catch (error) {
-    console.error("Errore durante il login", error);
-    alert("Errore durante il login");
+    console.error("Errore durante il login:", error);
+    alert("Errore durante il login. Riprova.");
   }
 }
+
 
 //funzione signup
 async function signupfun(){

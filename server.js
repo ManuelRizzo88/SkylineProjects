@@ -174,7 +174,7 @@ app.post("/login", async (req, res) => {
 
     console.log(userQuery.rows[0]);
 
-console.log(user)
+    console.log(user)
     if (!user) {
       console.log("No Utente")
       return res.status(401).json({ error: "Credenziali non valide"+ error.message });
@@ -197,6 +197,28 @@ console.log(user)
   } catch (error) {
     console.error("Errore durante il login:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/getUserTeam/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const query = `
+      SELECT t.idteam 
+      FROM teamers t
+      WHERE t.idutente = $1
+    `;
+    const result = await pool.query(query, [userId]);
+
+    if (result.rows.length > 0) {
+      res.status(200).json({ teamId: result.rows[0].idteam });
+    } else {
+      res.status(404).json({ message: "Nessun team trovato per questo utente." });
+    }
+  } catch (error) {
+    console.error("Errore durante il recupero del team:", error);
+    res.status(500).send("Errore del server.");
   }
 });
 
