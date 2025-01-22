@@ -542,6 +542,52 @@ app.post("/removeMember", async (req, res) => {
   }
 });
 
+app.delete("/deleteService/:serviceId", async (req, res) => {
+  const { serviceId } = req.params;
+
+  try {
+    // Query per eliminare il servizio dal database
+    const query = `
+      DELETE FROM servizio
+      WHERE idservizio = $1
+    `;
+    const result = await pool.query(query, [serviceId]);
+
+    if (result.rowCount > 0) {
+      res.status(200).json({ message: "Servizio rimosso con successo." });
+    } else {
+      res.status(404).json({ message: "Servizio non trovato." });
+    }
+  } catch (error) {
+    console.error("Errore durante l'eliminazione del servizio:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
+
+app.get("/getServices/:sellerId", async (req, res) => {
+  const { sellerId } = req.params;
+
+  try {
+    // Query per ottenere i servizi dal database
+    const query = `
+      SELECT idservizio, titolo, descrizione, prezzo
+      FROM servizio
+      WHERE idvenditore = $1
+    `;
+    const result = await pool.query(query, [sellerId]);
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows);
+    } else {
+      res.status(404).json({ message: "Nessun servizio trovato per questo venditore." });
+    }
+  } catch (error) {
+    console.error("Errore durante il recupero dei servizi:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
+
+
 // Avvia il server
 app.listen(port, () => {
   console.log(`Server avviato su http://localhost:${port}`);

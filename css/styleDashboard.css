@@ -514,3 +514,27 @@ button.btn-sm {
 #noTeamSection button:hover {
   background-color: #0056b3;
 }
+
+#servicesSection {
+  margin:auto;
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: fit-content;
+  width: 90rem;
+}
+
+/* Titolo del team */
+#servicesSection h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+#addServiceModal
+{
+  color:#000;
+}

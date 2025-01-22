@@ -7,7 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- AwesomeFonts -->
     <link href="../css/styleDashboard.css" rel="stylesheet">
     <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
-    <title>SkylineProject | Dashboard</title>
+    <title>SkylineProject | My Services</title>
 </head>
 <body>
     
@@ -64,7 +64,26 @@
           <button class="sidebar-button active">My Services</button>
           <button class="sidebar-button service" data-bs-toggle="modal" data-bs-target="#addServiceModal"><i class="fas fa-plus"></i> Aggiungi Servizio</button>
         </div>
+
+        <div id="servicesSection">
+            <h2>Servizi del Venditore</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID Servizio</th>
+                    <th>Titolo</th>
+                    <th>Descrizione</th>
+                    <th>Prezzo (€)</th>
+                    <th>Azioni</th>
+                </tr>
+                </thead>
+                <tbody id="servicesTableBody">
+                <!-- I servizi verranno aggiunti dinamicamente qui -->
+                </tbody>
+            </table>
+            </div>
     </div>
+    
 
         <!-- Modal -->
         <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
@@ -101,6 +120,7 @@
             </div>
         </div>
     </div>
+
 
     <footer class="custom-footer">
         <div class="footer-top">

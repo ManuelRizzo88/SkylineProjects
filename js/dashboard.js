@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
 })
 // Inizializzazione
 document.addEventListener("DOMContentLoaded",fetchTeam)
+document.addEventListener("DOMContentLoaded",fetchServices)
 
 // Funzione per ottenere i dati di vendita mensili dal server
 async function fetchVenditeMensili(venditoreId) {
@@ -288,6 +289,69 @@ async function removeMember(memberId) {
 function renderNoTeam() {
   noTeamSection.classList.remove("d-none");
   teamTableContainer.classList.add("d-none");
+}
+
+function renderServices(services) {
+  const servicesTable = document.getElementById("servicesTableBody");
+  servicesTable.innerHTML = services
+    .map(
+      (service) => `
+        <tr>
+          <td>${service.idservizio}</td>
+          <td>${service.titolo}</td>
+          <td>${service.descrizione}</td>
+          <td>${service.prezzo} €</td>
+          <td>
+            <button 
+              class="btn btn-danger btn-sm" 
+              onclick="removeService(${service.idservizio})">
+              Rimuovi
+            </button>
+          </td>
+        </tr>
+      `
+    )
+    .join("");
+}
+
+async function removeService(serviceId) {
+  if (!confirm("Sei sicuro di voler rimuovere questo servizio?")) return;
+
+  try {
+    const response = await fetch(`/deleteService/${serviceId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      alert("Servizio rimosso con successo.");
+      // Ricarica i servizi aggiornati
+      const sellerId = JSON.parse(localStorage.getItem("user")).idvenditore;
+      fetchServices(sellerId);
+    } else {
+      const message = await response.json();
+      alert(message.message || "Errore durante la rimozione del servizio.");
+    }
+  } catch (error) {
+    console.error("Errore durante la rimozione del servizio:", error);
+  }
+}
+
+async function fetchServices() {
+
+  const user = JSON.parse(localStorage.getItem("user"))
+  try {
+    const response = await fetch(`/getServices/${user.idvenditore}`);
+    if (response.ok) {
+      const services = await response.json();
+      console.table(services); // Logga i servizi per controllo
+      renderServices(services); // Renderizza i servizi in una tabella o in una lista
+    } else {
+      const message = await response.json();
+      alert(message.message || "Errore durante il recupero dei servizi.");
+    }
+  } catch (error) {
+    console.error("Errore durante il fetch dei servizi:", error);
+  }
 }
 
 // Event listener
