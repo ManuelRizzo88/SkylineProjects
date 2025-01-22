@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("servicedetails-price").textContent = `Prezzo: ${service.prezzo}€`;
         document.getElementById("servicedetails-image").src = `data:image/jpeg;base64,${service.image}`;
 
+        console.table(service)
     } catch (error) {
         console.error("Errore:", error);
         alert("Errore durante il caricamento dei dettagli del servizio.");
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Funzione per gestire l'ordine
     async function handleOrder() {
+        
         
 
         if (!service) {
@@ -59,6 +61,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!user || !user.idcliente) {
             alert("Utente non autenticato.");
             return;
+        }
+
+        if(user.idvenditore === service.idvenditore)
+        {
+            alert("Non Puoi Ordinare Da Te Stesso")
+            window.location.href = "services.html"
         }
 
         // Recupera la data corrente e formatta come YYYY-MM-DD
@@ -89,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (response.ok) {
                 alert("Ordine creato con successo!");
-                modal.style.display = "None"
+                modal.style.display = "none"
             } else {
                 console.error("Errore:", result.error);
                 alert("Errore durante la creazione dell'ordine: " + result.error);
