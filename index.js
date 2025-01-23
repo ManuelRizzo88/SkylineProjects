@@ -578,8 +578,6 @@ app.get("/getServices/:sellerId", async (req, res) => {
 
     if (result.rows.length > 0) {
       res.status(200).json(result.rows);
-    } else {
-      res.status(404).json({ message: "Nessun servizio trovato per questo venditore." });
     }
   } catch (error) {
     console.error("Errore durante il recupero dei servizi:", error);
