@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         {
             alert("Non Puoi Ordinare Da Te Stesso")
             window.location.href = "services.html"
+            return;
         }
 
         // Recupera la data corrente e formatta come YYYY-MM-DD

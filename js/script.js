@@ -87,18 +87,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Funzioni per scorrere
-document.querySelector(".prev").addEventListener("click", () => {
-  document
-    .querySelector(".carousel-content")
-    .scrollBy({ left: -220, behavior: "smooth" });
-});
-
-document.querySelector(".next").addEventListener("click", () => {
-  document
-    .querySelector(".carousel-content")
-    .scrollBy({ left: 220, behavior: "smooth" });
-});
 // Gestione della Navbar
 function setupNavbar() {
   const navbarDynamicContent = document.getElementById("navbarButtons");

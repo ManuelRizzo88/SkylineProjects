@@ -365,25 +365,26 @@ async function fetchOrders() {
     if (response.ok) {
       const orders = await response.json();
       console.table(orders); // Logga i servizi per controllo
-      renderServices(orders); // Renderizza i servizi in una tabella o in una lista
+      renderOrders(orders); // Renderizza i servizi in una tabella o in una lista
     } else {
       const message = await response.json();
       alert(message.message || "Errore durante il recupero dei servizi.");
     }
   } catch (error) {
-    console.error("Errore durante il fetch dei servizi:", error);
+    console.error("Errore durante il fetch dei Order:", error);
   }
 }
 function renderOrders(orders) {
+  console.table(orders)
   const ordersTable = document.getElementById("ordersTableBody");
   ordersTable.innerHTML = orders
     .map(
-      (service) => `
+      (order) => `
         <tr>
-          <td>${service.idordine}</td>
-          <td>${service.descrizione}</td>
-          <td>${service.stato}</td>
-          <td>${service.scadenza} €</td>
+          <td>${order.idordine}</td>
+          <td>${order.descrizione}</td>
+          <td>${order.stato}</td>
+          <td>${order.scadenza.split("T")[0]}</td>
         </tr>
       `
     )

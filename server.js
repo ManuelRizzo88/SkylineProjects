@@ -593,19 +593,19 @@ app.get("/getOrders/:sellerId", async (req, res) => {
   try {
     // Query per ottenere i servizi dal database
     const query = `
-      SELECT idordine, descrizione, stato,scadenza
+      SELECT *
       FROM ordine
-      WHERE idvenditore = $1 AND stato != "Concluso"
+      WHERE idvenditore = $1 AND stato != 'Concluso';
     `;
     const result = await pool.query(query, [sellerId]);
 
     if (result.rows.length > 0) {
       res.status(200).json(result.rows);
     } else {
-      res.status(404).json({ message: "Nessun servizio trovato per questo venditore." });
+      res.status(404).json({ message: "Nessun Ordine trovato per questo venditore." });
     }
   } catch (error) {
-    console.error("Errore durante il recupero dei servizi:", error);
+    console.error("Errore durante il recupero dei ordini:", error);
     res.status(500).send("Errore del server.");
   }
 });
