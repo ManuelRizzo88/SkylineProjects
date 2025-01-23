@@ -173,9 +173,6 @@ async function login() {
       alert("Login effettuato con successo!");
       // Redirigi al Team Management o Dashboard
       window.location.href = "home.html";
-    } else {
-      const errorMessage = await response.text();
-      alert(`Errore durante il login: ${errorMessage}`);
     }
   } catch (error) {
     console.error("Errore durante il login:", error);

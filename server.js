@@ -183,7 +183,7 @@ app.post("/login", async (req, res) => {
     console.log(user.passhash);
     // Verifica la password
     const passwordMatch = await bcrypt.compare(password, user.passhash);
-    if (passwordMatch) {
+    if (!passwordMatch) {
       return res.status(401).json({ error: "Credenziali non valide " + error.message });
     }
 
