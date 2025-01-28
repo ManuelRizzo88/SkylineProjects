@@ -606,6 +606,29 @@ app.get("/getOrders/:sellerId", async (req, res) => {
   }
 });
 
+app.put("/updateOrderStatus/:orderId", async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body; // Stato passato dal client
+
+  try {
+    const query = `
+      UPDATE ordine
+      SET stato = $1
+      WHERE idordine = $2
+      RETURNING *;
+    `;
+    const result = await pool.query(query, [status, orderId]);
+
+    if (result.rowCount > 0) {
+      res.status(200).json({ message: "Stato aggiornato con successo.", order: result.rows[0] });
+    } else {
+      res.status(404).json({ message: "Ordine non trovato." });
+    }
+  } catch (error) {
+    console.error("Errore durante l'aggiornamento dello stato dell'ordine:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
 
 // Avvia il server
 app.listen(port, () => {

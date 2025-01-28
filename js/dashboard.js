@@ -374,22 +374,51 @@ async function fetchOrders() {
     console.error("Errore durante il fetch dei Order:", error);
   }
 }
+
 function renderOrders(orders) {
-  console.table(orders)
-  const ordersTable = document.getElementById("ordersTableBody");
-  ordersTable.innerHTML = orders
-    .map(
-      (order) => `
-        <tr>
-          <td>${order.idordine}</td>
-          <td>${order.descrizione}</td>
-          <td>${order.stato}</td>
-          <td>${order.scadenza.split("T")[0]}</td>
-        </tr>
-      `
-    )
-    .join("");
+  const tableBody = document.getElementById("ordersTableBody");
+  tableBody.innerHTML = ""; // Puliamo la tabella prima di riempirla
+
+  orders.forEach(order => {
+    const row = document.createElement("tr");
+    
+    let actions = "";
+    if (order.stato !== "Completato" && order.stato !== "Rifiutato") {
+      actions = `
+        <button onclick="updateOrderStatus(${order.idordine}, 'Completato')">✔️</button>
+        <button onclick="updateOrderStatus(${order.idordine}, 'Rifiutato')">❌</button>
+      `;
+    }
+
+    row.innerHTML = `
+      <td>${order.idordine}</td>
+      <td>${order.descrizione}</td>
+      <td>${order.stato}</td>
+      <td>${order.scadenza.split("T")[0]}</td>
+      <td>${actions}</td>
+    `;
+    
+    tableBody.appendChild(row);
+  });
 }
+
+async function updateOrderStatus(orderId, newStatus) {
+  const response = await fetch(`/updateOrderStatus/${orderId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: newStatus }),
+  });
+
+  const result = await response.json();
+  if (response.ok) {
+    alert(`Ordine aggiornato a: ${newStatus}`);
+    renderOrders(); // Ricarichiamo la lista dopo l'aggiornamento
+  } else {
+    alert("Errore: " + result.message);
+  }
+}
+
+
 // Event listener
 createTeamBtn.addEventListener("click", createTeam);
 deleteTeamBtn.addEventListener("click", deleteTeam);
