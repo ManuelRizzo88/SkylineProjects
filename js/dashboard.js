@@ -383,9 +383,9 @@ function renderOrders(orders) {
     const row = document.createElement("tr");
     
     let actions = "";
-    if (order.stato !== "Completato" && order.stato !== "Rifiutato") {
+    if (order.stato !== "Concluso" && order.stato !== "Rifiutato") {
       actions = `
-        <button onclick="updateOrderStatus(${order.idordine}, 'Completato')">✔️</button>
+        <button onclick="updateOrderStatus(${order.idordine}, 'Concluso')">✔️</button>
         <button onclick="updateOrderStatus(${order.idordine}, 'Rifiutato')">❌</button>
       `;
     }
