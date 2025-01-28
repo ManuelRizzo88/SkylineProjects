@@ -179,7 +179,6 @@ app.post("/login", async (req, res) => {
       console.log("No Utente")
       return res.status(401).json({ error: "Credenziali non valide"+ error.message });
     }
-
     console.log(user.passhash);
     // Verifica la password
     const passwordMatch = await bcrypt.compare(password, user.passhash);
@@ -613,7 +612,7 @@ app.put("/updateOrderStatus/:orderId", async (req, res) => {
   try {
     const query = `
       UPDATE ordine
-      SET stato = $1
+      SET stato = $1, concluso = NOW()
       WHERE idordine = $2
       RETURNING *;
     `;
