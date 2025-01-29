@@ -16,7 +16,7 @@ const port = 3000;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL2 });
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME, // Sostituisci con il tuo Cloud Name
