@@ -738,6 +738,7 @@ body {
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.5);
+  color:black;
 }
 
 /* Contenuto del modal */
@@ -787,6 +788,7 @@ body {
   transition: cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.25s color;
   color: #f4d35e; /* Colore al passaggio del mouse */
 }
+
 
 
 

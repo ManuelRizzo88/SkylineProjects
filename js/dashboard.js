@@ -14,11 +14,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
     window.location.href = "home.html"
   }
 })
-// Inizializzazione
-document.addEventListener("DOMContentLoaded",fetchTeam)
+
 document.addEventListener("DOMContentLoaded",fetchVenditeMensili)
 document.addEventListener("DOMContentLoaded",fetchServices)
 document.addEventListener("DOMContentLoaded",fetchOrders)
+document.addEventListener("DOMContentLoaded",fetchTeam)
+
+createTeamBtn.addEventListener("click", createTeam);
 // Creare il grafico all'avvio della pagina
 document.addEventListener("DOMContentLoaded", () => {
   creaGrafico();
@@ -177,7 +179,7 @@ document.getElementById("submitService").addEventListener("click", async () => {
 
 // Funzione per ottenere il team dal server
 async function fetchTeam() {
-  const team = JSON.parse(localStorage.getItem("teamId"));
+  const team = JSON.parse(localStorage.getItem("team"));
 
   if (!team) {
     renderNoTeam(); // Se non c'è un team salvato
@@ -185,9 +187,9 @@ async function fetchTeam() {
   }
 
   try {
-    const response = await fetch(`/getTeamMembers/${team}`);
+    const response = await fetch(`/getTeamMembers/${team.teamid}`);
     const members = await response.json(); // Supponiamo che l'API restituisca un array di membri
-
+    console.log(members);
     if (members.length > 0) {
       renderTeam(members); // Passiamo direttamente i membri alla funzione di rendering
     } else {
@@ -216,7 +218,7 @@ async function createTeam() {
     if (response.ok) {
       const team = await response.json()
       localStorage.setItem("team",JSON.stringify(team))
-      renderTeam(teamNamePrompt);
+      fetchTeam()
     } else {
       alert("Errore durante la creazione del team.");
     }
@@ -245,7 +247,6 @@ function renderTeam(members) {
   noTeamSection.classList.add("d-none");
   teamTableContainer.classList.remove("d-none");
 
-  // Ottieni il nome del team dal primo membro (presupponendo che ogni membro abbia un riferimento al team)
   const team = members[0].teamName; // Assumi che `teamName` sia una proprietà restituita dall'API
   teamName.textContent = team;
 
@@ -374,25 +375,49 @@ async function fetchOrders() {
     console.error("Errore durante il fetch dei Order:", error);
   }
 }
+
 function renderOrders(orders) {
-  console.table(orders)
-  const ordersTable = document.getElementById("ordersTableBody");
-  ordersTable.innerHTML = orders
-    .map(
-      (order) => `
-        <tr>
-          <td>${order.idordine}</td>
-          <td>${order.descrizione}</td>
-          <td>${order.stato}</td>
-          <td>${order.scadenza.split("T")[0]}</td>
-        </tr>
-      `
-    )
-    .join("");
+  const tableBody = document.getElementById("ordersTableBody");
+  tableBody.innerHTML = ""; // Puliamo la tabella prima di riempirla
+
+  orders.forEach(order => {
+    const row = document.createElement("tr");
+    
+    let actions = "";
+    if (order.stato !== "Concluso" && order.stato !== "Rifiutato") {
+      actions = `
+        <button onclick="updateOrderStatus(${order.idordine}, 'Concluso')" class="TableBTN"><i class="fa-solid fa-check" style="color: #04ff00;"></i></button>
+        <button onclick="updateOrderStatus(${order.idordine}, 'Rifiutato')" class="TableBTN"><i class="fa-solid fa-xmark" style="color: #ff0000;"></i></button>
+      `;
+    }
+
+    row.innerHTML = `
+      <td>${order.idordine}</td>
+      <td>${order.descrizione}</td>
+      <td>${order.stato}</td>
+      <td>${order.scadenza.split("T")[0]}</td>
+      <td>${actions}</td>
+    `;
+    
+    tableBody.appendChild(row);
+  });
 }
-// Event listener
-createTeamBtn.addEventListener("click", createTeam);
-deleteTeamBtn.addEventListener("click", deleteTeam);
+
+async function updateOrderStatus(orderId, newStatus) {
+  const response = await fetch(`/updateOrderStatus/${orderId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: newStatus }),
+  });
+
+  const result = await response.json();
+  if (response.ok) {
+    alert(`Ordine aggiornato a: ${newStatus}`);
+    window.location.reload() // Ricarichiamo la lista dopo l'aggiornamento
+  } else {
+    alert("Errore: " + result.message);
+  }
+}
 
 
 
