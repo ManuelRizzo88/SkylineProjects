@@ -1,12 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const { Pool } = require("pg");
 const path = require("path");
 const crypto = require("crypto");
 const { error } = require("console");
-const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
+const postgres = require('postgres');
+
 
 require("dotenv").config();
 
@@ -16,15 +16,10 @@ const port = 3000;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL2 });
+const connectionString = process.env.DATABASE_URL2
+const sql = postgres(connectionString)
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME, // Sostituisci con il tuo Cloud Name
-  api_key: process.env.API_KEY,       // Sostituisci con la tua API Key
-  api_secret: process.env.API_SECRET  // Sostituisci con il tuo API Secret
-});   
 
-module.exports = cloudinary;
 // Configura CORS
 app.use(cors());
 
@@ -46,8 +41,7 @@ app.get("/", (req, res) => {
 // API per ottenere servizi
 app.get("/services", async (req, res) => {
   try {
-    const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio`;
-    const result = await pool.query(query);
+    const result = await sql`SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio`;
 
     const services = result.rows.map(row => ({
       idservice: row.idservizio,
@@ -66,34 +60,21 @@ app.get("/services", async (req, res) => {
 });
 
 app.get("/services/:id", async (req, res) => {
-  const idS = req.params.id
-  console.log(idS)
+  const idS = req.params.id;
+  console.log(idS);
   try {
-    const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio WHERE idservizio = $1`;
-    const result = await pool.query(query,[idS]);
+    const services = await sql`
+      SELECT idservizio, titolo, descrizione, prezzo, 
+            encode(image, 'base64') AS image, idvenditore 
+      FROM servizio 
+      WHERE idservizio = ${idS}`;
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Servizio non trovato' });
-  }
+    if (services.length === 0) {
+      return res.status(404).json({ error: "Servizio non trovato" });
+    }
 
-  // Invia il servizio trovato come risposta
-  const service = result.rows[0];
-
-  // Converti i dati dell'immagine (se in formato bytea) in base64
-  if (service.image) {
-      service.image = `${service.image.toString('base64')}`;
-  }
-
-  res.json(service);
-    // const services = result.rows.map(row => ({
-    //   idservice: row.idservizio,
-    //   title: row.titolo,
-    //   description: row.descrizione,
-    //   price: row.prezzo,
-    //   image: row.image ? `data:image/png;base64,${row.image}` : null, // Controlla che image non sia null
-    //   sellerId: row.idvenditore
-    // }));
-
+    const service = services[0];
+    res.json(service);
   } catch (error) {
     console.error("Errore durante il recupero dei servizi:", error);
     res.status(500).send("Errore del server.");
@@ -103,10 +84,9 @@ app.get("/services/:id", async (req, res) => {
 
 app.get("/topservices", async (req, res) => {
   try {
-    const query = `SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio LIMIT 5`;
-    const result = await pool.query(query);
+    const result = await sql`SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio LIMIT 5`;
 
-    const services = result.rows.map(row => ({
+    const services = result.map(row => ({
       idservice: row.idservizio,
       title: row.titolo,
       description: row.descrizione,
@@ -133,8 +113,9 @@ app.post("/signup", async (req, res) => {
   try {
     
     // Controlla se l'utente esiste già
-    const userCheck = await pool.query("SELECT * FROM utente WHERE email = $1", [email]);
-    if (userCheck.rows.length > 0) {
+    const userCheck = await sql`SELECT * FROM utente WHERE email = ${email}`
+    console.log(userCheck)
+    if (userCheck.length > 0) {
       return res.status(409).json({ error: "Email già registrata" });
     }
 
@@ -144,11 +125,7 @@ app.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Inserisci il nuovo utente nel database
-    
-    await pool.query(
-      "INSERT INTO utente (name, surname, email, passhash, idcliente, idvenditore) VALUES ($1, $2, $3, $4, $5, $6)",
-      [name, surname, email, hashedPassword, idCliente, idVenditore]
-    );
+    await sql`INSERT INTO utente (name, surname, email, passhash, idcliente, idvenditore) VALUES (${name}, ${surname}, ${email}, ${hashedPassword}, ${idCliente}, ${idVenditore})`
 
     res.status(201).json({ message: "Registrazione effettuata con successo" });
   } catch (error) {
@@ -160,30 +137,21 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  console.log(req.body);
-  
   if (!email || !password) {
     return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
   }
 
   try {
-    console.log(email);
-    // Cerca l'utente nel database
-    const userQuery = await pool.query("SELECT * FROM utente WHERE email = $1", [email]);
-    const user = userQuery.rows[0];
+    const users = await sql`SELECT * FROM utente WHERE email = ${email}`;
+    const user = users[0];
 
-    console.log(userQuery.rows[0]);
-
-    console.log(user)
     if (!user) {
-      console.log("No Utente")
-      return res.status(401).json({ error: "Credenziali non valide"+ error.message });
+      return res.status(401).json({ error: "Email o password errati" });
     }
-    console.log(user.passhash);
-    // Verifica la password
+
     const passwordMatch = await bcrypt.compare(password, user.passhash);
     if (!passwordMatch) {
-      return res.status(401).json({ error: "Credenziali non valide " + error.message });
+      return res.status(401).json({ error: "Email o password errati" });
     }
 
     res.status(200).json({
@@ -194,8 +162,8 @@ app.post("/login", async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    console.error("Errore durante il login:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Errore durante il login:", error.message);
+    res.status(500).json({ error: "Errore del server, riprova più tardi" });
   }
 });
 
@@ -203,14 +171,13 @@ app.get("/getUserTeam/:userId", async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const query = `
+    const result = await sql`
       SELECT t.idteam 
       FROM teamers t
-      WHERE t.idutente = $1
-    `;
-    const result = await pool.query(query, [userId]);
+      WHERE t.idutente = ${userId}`
+    ;
 
-    if (result.rows.length > 0) {
+    if (result.length > 0) {
       res.status(200).json({ teamId: result.rows[0].idteam });
     } else {
       res.status(404).json({ message: "Nessun team trovato per questo utente." });
@@ -225,17 +192,16 @@ app.get('/vendite-mensili/:venditoreId', async (req, res) => {
   const venditoreId = req.params.venditoreId;
 
   try {
-    const query = `
+    const { rows } = await sql`
       SELECT 
         DATE_TRUNC('month', ordine.concluso) AS mese,
         COUNT(ordine.idordine) AS numero_ordini,
         SUM(ordine.prezzo) AS totale_vendite
       FROM ordine
-      WHERE ordine.idvenditore = $1 AND ordine.stato = 'Concluso'
+      WHERE ordine.idvenditore = ${venditoreId} AND ordine.stato = 'Concluso'
       GROUP BY mese
       ORDER BY mese;
     `;
-    const { rows } = await pool.query(query, [venditoreId]);
     res.json(rows);
   } catch (error) {
     console.error(error);
@@ -253,8 +219,8 @@ app.get("/dashboard", async (req, res) => {
 
   try {
     // Esegui una query per ottenere i dati relativi all'idVenditore
-    const venditoreData = await pool.query("SELECT * FROM servizi WHERE idvenditore = $1", [idVenditore]);
-
+    
+    const venditoreData = await sql`SELECT * FROM servizi WHERE idvenditore = ${idVenditore}`;
     res.status(200).json(venditoreData.rows);
   } catch (error) {
     console.error("Errore durante il caricamento della dashboard:", error);
@@ -279,19 +245,11 @@ app.post("/addService", upload.single("image"), async (req, res) => {
     // Ottieni il buffer dell'immagine
     const imageBuffer = req.file.buffer;
 
-    // Query per inserire i dati nel database
-    const query = `
-      INSERT INTO servizio (titolo, descrizione, prezzo, image, idvenditore)
-      VALUES ($1, $2, $3, $4, $5)
-    `;
 
-    await pool.query(query, [
-      title,
-      description,
-      parseFloat(price),
-      imageBuffer,
-      sellerId,
-    ]);
+    await sql`
+      INSERT INTO servizio (titolo, descrizione, prezzo, image, idvenditore)
+      VALUES (${title}, ${description}, ${parseFloat(price)}, ${imageBuffer}, ${sellerId})
+    `;
 
     res.status(200).send("Servizio caricato con successo!");
   } catch (error) {
@@ -303,7 +261,7 @@ app.post("/addService", upload.single("image"), async (req, res) => {
 app.post("/addServiceNoImage", async (req, res) => {
   try {
 
-    const payload = { title, description, price, sellerId } = req.body;
+    const { title, description, price, sellerId } = req.body;
 
     console.log(payload)
     
@@ -319,11 +277,13 @@ app.post("/addServiceNoImage", async (req, res) => {
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
-    const values = [title, description, price, sellerId, null];
 
-    console.log(values);
 
-    const { rows } = await pool.query(query, values);
+    const { rows } = await sql`
+      INSERT INTO servizio (titolo, descrizione, prezzo, idvenditore, image)
+      VALUES (${title}, ${description}, ${parseFloat(price)}, ${sellerId}, null)
+      RETURNING *;
+    `;
 
     res.status(201).json({
       message: "Servizio aggiunto con successo!",
@@ -357,9 +317,12 @@ app.post('/orders', async (req, res) => {
           RETURNING *;
       `;
 
-      const values = [descrizione, stato, scadenza, idVenditore, idCliente, prezzo, fattura || null];
+      const result = await sql`
+          INSERT INTO Ordine (Descrizione, Stato, Scadenza, IdVenditore, IdCliente, Prezzo, Fattura)
+          VALUES (${descrizione}, ${stato}, ${scadenza}, ${idVenditore}, ${idCliente}, ${prezzo}, null)
+          RETURNING *;
+      `;
 
-      const result = await pool.query(query, values);
       const newOrder = result.rows[0];
 
       res.status(201).json({
@@ -383,20 +346,19 @@ app.post("/createTeam", async (req, res) => {
     }
 
     // Query per creare il team
-    const createTeamQuery = `
+    const teamResult = await sql`
       INSERT INTO Team (teamname)
-      VALUES ($1)
+      VALUES (${name})
       RETURNING IdTeam
     `;
-    const teamResult = await pool.query(createTeamQuery, [name]);
-    const teamId = teamResult.rows[0].idteam;
+    console.log(teamResult)
+    const teamId = teamResult[0].idteam;
 
     // Aggiungi l'utente come Owner del team nella tabella Teamers
-    const addOwnerQuery = `
+    await sql`
       INSERT INTO Teamers (idteam, idutente, Role)
-      VALUES ($1, $2, $3)
+      VALUES (${teamId}, ${userId}, "Owner")
     `;
-    await pool.query(addOwnerQuery, [teamId, userId, "Owner"]);
     
     res.status(201).json({
       teamid:teamId
@@ -449,7 +411,7 @@ app.post("/respondToInvitation", async (req, res) => {
     // Ottieni i dettagli dell'invito
     const getInvitationQuery = `SELECT * FROM Invitations WHERE Id = $1`;
     const invitationResult = await pool.query(getInvitationQuery, [invitationId]);
-    if (invitationResult.rows.length === 0) {
+    if (invitationResult.length === 0) {
       return res.status(404).send("Invito non trovato.");
     }
 
@@ -479,7 +441,7 @@ app.get("/getTeamMembers/:teamId", async (req, res) => {
   try {
     const { teamId } = req.params;
 
-    const membersQuery = `
+    const membersResult = await sql`
       SELECT 
         u.IdU AS id, 
         u.name AS name, 
@@ -488,10 +450,8 @@ app.get("/getTeamMembers/:teamId", async (req, res) => {
       FROM Teamers tm
       JOIN Utente u ON tm.IdUtente = u.IdU
       JOIN Team t ON tm.IdTeam = t.IdTeam
-      WHERE tm.IdTeam = $1
+      WHERE tm.IdTeam = ${teamId}
     `;
-
-    const membersResult = await pool.query(membersQuery, [teamId]);
     
     res.status(200).json(membersResult.rows); // Restituisce un array di membri
     console.table(membersResult.rows)
@@ -527,12 +487,10 @@ app.post("/removeMember", async (req, res) => {
   try {
     const { memberId } = req.body;
 
-    const deleteQuery = `
+    await sql`
       DELETE FROM Teamers
-      WHERE IdUtente = $1
+      WHERE IdUtente = ${memberId}
     `;
-
-    await pool.query(deleteQuery, [memberId]);
 
     res.status(200).send("Membro rimosso con successo.");
   } catch (error) {
@@ -546,11 +504,10 @@ app.delete("/deleteService/:serviceId", async (req, res) => {
 
   try {
     // Query per eliminare il servizio dal database
-    const query = `
+    const result = await sql`
       DELETE FROM servizio
-      WHERE idservizio = $1
+      WHERE idservizio = ${serviceId}
     `;
-    const result = await pool.query(query, [serviceId]);
 
     if (result.rowCount > 0) {
       res.status(200).json({ message: "Servizio rimosso con successo." });
@@ -568,14 +525,13 @@ app.get("/getServices/:sellerId", async (req, res) => {
 
   try {
     // Query per ottenere i servizi dal database
-    const query = `
+    const result = await sql`
       SELECT idservizio, titolo, descrizione, prezzo
       FROM servizio
-      WHERE idvenditore = $1
+      WHERE idvenditore = ${sellerId}
     `;
-    const result = await pool.query(query, [sellerId]);
 
-    if (result.rows.length > 0) {
+    if (result.length > 0) {
       res.status(200).json(result.rows);
     }
   } catch (error) {
@@ -594,9 +550,13 @@ app.get("/getOrders/:sellerId", async (req, res) => {
       FROM ordine
       WHERE idvenditore = $1 AND stato != 'Concluso';
     `;
-    const result = await pool.query(query, [sellerId]);
+    const result = await sql`
+      SELECT *
+      FROM ordine
+      WHERE idvenditore = ${sellerId} AND stato != 'Concluso';
+    `;
 
-    if (result.rows.length > 0) {
+    if (result.length > 0) {
       res.status(200).json(result.rows);
     }
   } catch (error) {
@@ -616,7 +576,12 @@ app.put("/updateOrderStatus/:orderId", async (req, res) => {
       WHERE idordine = $2
       RETURNING *;
     `;
-    const result = await pool.query(query, [status, orderId]);
+    const result = await sql`
+      UPDATE ordine
+      SET stato = ${status}, concluso = NOW()
+      WHERE idordine = ${orderId}
+      RETURNING *;
+    `;
 
     if (result.rowCount > 0) {
       res.status(200).json({ message: "Stato aggiornato con successo.", order: result.rows[0] });
