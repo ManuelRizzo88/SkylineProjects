@@ -178,7 +178,7 @@ app.get("/getUserTeam/:userId", async (req, res) => {
     ;
 
     if (result.length > 0) {
-      res.status(200).json({ teamId: result.rows[0].idteam });
+      res.status(200).json({ teamId: result[0].idteam });
     } else {
       res.status(404).json({ message: "Nessun team trovato per questo utente." });
     }
@@ -189,10 +189,11 @@ app.get("/getUserTeam/:userId", async (req, res) => {
 });
 
 app.get('/vendite-mensili/:venditoreId', async (req, res) => {
+  console.log("ricerca mensile")
   const venditoreId = req.params.venditoreId;
 
   try {
-    const { rows } = await sql`
+    const rows  = await sql`
       SELECT 
         DATE_TRUNC('month', ordine.concluso) AS mese,
         COUNT(ordine.idordine) AS numero_ordini,
@@ -218,10 +219,9 @@ app.get("/dashboard", async (req, res) => {
   }
 
   try {
-    // Esegui una query per ottenere i dati relativi all'idVenditore
     
     const venditoreData = await sql`SELECT * FROM servizi WHERE idvenditore = ${idVenditore}`;
-    res.status(200).json(venditoreData.rows);
+    res.status(200).json(venditoreData);
   } catch (error) {
     console.error("Errore durante il caricamento della dashboard:", error);
     res.status(500).json({ error: "Errore del server" });
@@ -264,22 +264,8 @@ app.post("/addServiceNoImage", async (req, res) => {
     const { title, description, price, sellerId } = req.body;
 
     console.log(payload)
-    
-    // Validazione dei dati
-    // if (titolo || descrizione || prezzo || sellerId) {
-    //   return res.status(400).send("Tutti i campi sono obbligatori");
-    // }
 
-
-    // Salva il servizio nel database
-    const query = `
-      INSERT INTO servizio (titolo, descrizione, prezzo, idvenditore, image)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;
-    `;
-
-
-    const { rows } = await sql`
+    const rows = await sql`
       INSERT INTO servizio (titolo, descrizione, prezzo, idvenditore, image)
       VALUES (${title}, ${description}, ${parseFloat(price)}, ${sellerId}, null)
       RETURNING *;
@@ -323,7 +309,7 @@ app.post('/orders', async (req, res) => {
           RETURNING *;
       `;
 
-      const newOrder = result.rows[0];
+      const newOrder = result[0];
 
       res.status(201).json({
           message: "Ordine creato con successo.",
@@ -508,13 +494,14 @@ app.delete("/deleteService/:serviceId", async (req, res) => {
     const result = await sql`
       DELETE FROM servizio
       WHERE idservizio = ${serviceId}
+      RETURNING idservizio
     `;
 
-    if (result.rowCount > 0) {
+    if (result.length > 0) {
       res.status(200).json({ message: "Servizio rimosso con successo." });
     } else {
-      res.status(404).json({ message: "Servizio non trovato." });
-    }
+      res.status(404).json({ error: "Servizio non trovato." });
+    } 
   } catch (error) {
     console.error("Errore durante l'eliminazione del servizio:", error);
     res.status(500).send("Errore del server.");
@@ -533,7 +520,7 @@ app.get("/getServices/:sellerId", async (req, res) => {
     `;
 
     if (result.length > 0) {
-      res.status(200).json(result.rows);
+      res.status(200).json(result); 
     }
   } catch (error) {
     console.error("Errore durante il recupero dei servizi:", error);
@@ -546,11 +533,7 @@ app.get("/getOrders/:sellerId", async (req, res) => {
 
   try {
     // Query per ottenere i servizi dal database
-    const query = `
-      SELECT *
-      FROM ordine
-      WHERE idvenditore = $1 AND stato != 'Concluso';
-    `;
+    
     const result = await sql`
       SELECT *
       FROM ordine
@@ -558,7 +541,7 @@ app.get("/getOrders/:sellerId", async (req, res) => {
     `;
 
     if (result.length > 0) {
-      res.status(200).json(result.rows);
+      res.status(200).json(result);
     }
   } catch (error) {
     console.error("Errore durante il recupero dei ordini:", error);
@@ -571,12 +554,6 @@ app.put("/updateOrderStatus/:orderId", async (req, res) => {
   const { status } = req.body; // Stato passato dal client
 
   try {
-    const query = `
-      UPDATE ordine
-      SET stato = $1, concluso = NOW()
-      WHERE idordine = $2
-      RETURNING *;
-    `;
     const result = await sql`
       UPDATE ordine
       SET stato = ${status}, concluso = NOW()
@@ -584,8 +561,8 @@ app.put("/updateOrderStatus/:orderId", async (req, res) => {
       RETURNING *;
     `;
 
-    if (result.rowCount > 0) {
-      res.status(200).json({ message: "Stato aggiornato con successo.", order: result.rows[0] });
+    if (result > 0) {
+      res.status(200).json({ message: "Stato aggiornato con successo.", order: result[0] });
     } else {
       res.status(404).json({ message: "Ordine non trovato." });
     }

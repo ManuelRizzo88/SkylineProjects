@@ -19,25 +19,25 @@ document.addEventListener("DOMContentLoaded",fetchVenditeMensili)
 document.addEventListener("DOMContentLoaded",fetchServices)
 document.addEventListener("DOMContentLoaded",fetchOrders)
 document.addEventListener("DOMContentLoaded",fetchTeam)
+document.getElementById("submitService").addEventListener("click", submitService);
+document.addEventListener("DOMContentLoaded", creaGrafico)
 
 createTeamBtn.addEventListener("click", createTeam);
 // Creare il grafico all'avvio della pagina
-document.addEventListener("DOMContentLoaded", () => {
-  creaGrafico();
-});
+
 
 // Funzione per ottenere i dati di vendita mensili dal server
 async function fetchVenditeMensili() {
   const user = JSON.parse(localStorage.getItem("user"));
     try {
-        const response = await fetch(`/vendite-mensili/${user.idvenditore}`); // Cambia con il tuo endpoint
+        const response = await fetch(`/vendite-mensili/${user.idvenditore}`); 
         if (!response.ok) {
             throw new Error(`Errore durante il fetch: ${response.statusText}`);
         }
         return await response.json();
     } catch (error) {
         console.error("Errore durante il fetch delle vendite mensili:", error);
-        return null; // In caso di errore, ritorna null
+        return null;
     }
 }
 
@@ -47,7 +47,7 @@ async function creaGrafico() {
     const user = JSON.parse(localStorage.getItem("user"));// Ottieni l'ID venditore dal localStorage
     if(user.idvenditore == null)
     {
-        found = true;
+      found = true;
     } 
 
     if (found) {
@@ -125,7 +125,10 @@ function mostraMessaggioNessunDato(messaggio) {
 
 
 
-document.getElementById("submitService").addEventListener("click", async () => {
+
+
+async function submitService() {
+  console.log("cliccato")
     const serviceImage = document.getElementById("serviceImage").files[0];
     const serviceTitle = document.getElementById("serviceTitle").value;
     const serviceDescription = document.getElementById("serviceDescription").value;
@@ -174,8 +177,7 @@ document.getElementById("submitService").addEventListener("click", async () => {
     console.error("Errore:", error);
     alert("Si è verificato un errore durante la connessione al server.");
     }
-});
-
+}
 
 // Funzione per ottenere il team dal server
 async function fetchTeam() {
@@ -331,6 +333,7 @@ async function removeService(serviceId) {
       alert("Servizio rimosso con successo.");
       // Ricarica i servizi aggiornati
       const sellerId = JSON.parse(localStorage.getItem("user")).idvenditore;
+      window.location.reload();
       fetchServices(sellerId);
     } else {
       const message = await response.json();
