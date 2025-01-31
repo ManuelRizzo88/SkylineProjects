@@ -3,6 +3,7 @@ const themeSwitcher = document.getElementById("themeSwitcher");
 const body = document.body;
 const themeIcon = themeSwitcher.querySelector("i");
 
+document.addEventListener("DOMContentLoaded", notifiche)
 // Inizializzazione
 document.addEventListener("DOMContentLoaded", () => {
   setupNavbar();
@@ -209,5 +210,47 @@ async function signupfun(){
       alert("Errore del server");
     }
   }
+  
+  function notifiche() {
+    const notificationCount = document.getElementById("notificationCount");
+    const notificationList = document.getElementById("notificationList");
+    
+    const userid = JSON.parse(localStorage.getItem("user").idu)
+    console.log(userid)
 
+    async function fetchNotifications() {
+      try {
+        const response = await fetch(`/getInvitations/${userid}`);
+        if (!response.ok) {
+          throw new Error("Errore nel recupero delle notifiche");
+        }
+  
+        const notifications = await response.json();
+        console.log(notifications)
+        updateNotifications(notifications);
+      } catch (error) {
+        console.error("Errore nel caricamento delle notifiche:", error);
+      }
+    }
+  
+    function updateNotifications(notifications) {
+      if (notifications.length == 0) {
+        notificationCount.style.display = "none";
+        notificationList.innerHTML = '<li class="dropdown-item text-muted">Nessuna notifica</li>';
+      } else {
+        notificationCount.style.display = "inline";
+        notificationCount.textContent = notifications.length;
+  
+        // Genera la lista delle notifiche
+        notificationList.innerHTML = notifications
+          .map(notif => `<li><a class="dropdown-item" href="#">${notif.message}</a></li>`)
+          .join("");
+      }
+    }
+
+    fetchNotifications();
+    setInterval(fetchNotifications, 10000);
+    
+  }
+  
 

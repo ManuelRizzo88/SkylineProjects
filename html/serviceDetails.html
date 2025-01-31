@@ -43,58 +43,53 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-
+    
         <!-- Navbar content -->
-        <div
-          class="collapse navbar-collapse justify-content-end"
-          id="navbarButtons"
-        >
-          <div class="d-flex">
+        <div class="collapse navbar-collapse justify-content-end" id="navbarButtons">
+          <div class="d-flex align-items-center">
+            <!-- Campanella Notifiche -->
+            <div class="dropdown me-2">
+              <button
+                class="btn btn-nav position-relative"
+                type="button"
+                id="notificationButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="fa-solid fa-bell"></i>
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  id="notificationCount"
+                >
+                </span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationButton" id="notificationList">
+              </ul>
+            </div>
+    
             <!-- Buttons -->
             <button class="btn btn-theme mx-1" id="themeSwitcher" type="button">
               <i class="fas fa-sun"></i>
             </button>
-            <button class="btn btn-nav mx-1" type="button" onclick="window.location.href = 'home.html'">Home</button>
-            <button
-              class="btn btn-nav mx-1"
-              type="button"
-              onclick="window.location.href = 'about.html'"
-            >
-              About Us
-            </button>
-            <button
-              class="btn btn-nav mx-1 active"
-              type="button"
-              onclick="window.location.href = 'services.html'"
-            >
-              Services
-            </button>
+            <button class="btn btn-nav mx-1 active" type="button" onclick="window.location.href = 'home.html'">Home</button>
+            <button class="btn btn-nav mx-1" type="button" onclick="window.location.href = 'about.html'">About Us</button>
+            <button class="btn btn-nav mx-1" type="button" onclick="window.location.href = 'services.html'">Services</button>
+    
+            <!-- Dropdown per Entra -->
             <div class="dropdown">
-              <button
-                class="btn btn-nav mx-1"
-                type="button"
-                id="dropdownMenuLink"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                onclick=""
-              >
-                Entra<i
-                  class="fa-solid fa-caret-down"
-                  style="margin-left: 5px"
-                ></i>
+              <button class="btn btn-nav mx-1" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                Entra<i class="fa-solid fa-caret-down" style="margin-left: 5px"></i>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li><a class="dropdown-item" href="login.html">Accedi</a></li>
-                <li>
-                  <a class="dropdown-item" href="signup.html">Registrati</a>
-                </li>
+                <li><a class="dropdown-item" href="signup.html">Registrati</a></li>
               </ul>
             </div>
           </div>
         </div>
       </div>
     </nav>
-
+    
     <a href="services.html" id="back-to-services" title="Torna ai Servizi">
       <i class="fas fa-arrow-left"></i> Torna ai Servizi
     </a>

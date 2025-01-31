@@ -19,40 +19,69 @@
 
     <nav class="navbar navbar-expand-lg custom-navbar">
         <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand" href="#">
-                <img src="../img/icon.png" alt="Logo" class="d-inline-block align-text-top">
-            </a>
-            <h1 class="navbar-title">SkylineProject | About Us</h1>
-            <!-- Toggle button for mobile -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarButtons" aria-controls="navbarButtons" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <!-- Navbar content -->
-            <div class="collapse navbar-collapse justify-content-end" id="navbarButtons">
-                <div class="d-flex">
-                    <!-- Buttons -->
-                    <button class="btn btn-theme mx-1" id="themeSwitcher" type="button">
-                        <i class="fas fa-sun"></i>
-                    </button>
-                    <button class="btn btn-nav mx-1" type="button" onclick="window.location.href = 'home.html'">Home</button>
-                    <button class="btn btn-nav mx-1 active" type="button">About Us</button>
-                    <button class="btn btn-nav mx-1" type="button" onclick="window.location.href = 'services.html'">Services</button>
-                    <div class="dropdown">
-                        <button class="btn btn-nav mx-1" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" onclick="">
-                            Entra<i class="fa-solid fa-caret-down" style="margin-left: 5px;"></i>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="login.html">Accedi</a></li>
-                            <li><a class="dropdown-item" href="signup.html">Registrati</a></li>
-                        </ul>
-                    </div>
-                </div>
+          <!-- Logo -->
+          <a class="navbar-brand" href="#">
+            <img src="../img/icon.png" alt="Logo" class="d-inline-block align-text-top">
+          </a>
+          <h1 class="navbar-title">SkylineProject | Home</h1>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarButtons"
+            aria-controls="navbarButtons"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+      
+          <!-- Navbar content -->
+          <div class="collapse navbar-collapse justify-content-end" id="navbarButtons">
+            <div class="d-flex align-items-center">
+              <!-- Campanella Notifiche -->
+              <div class="dropdown me-2">
+                <button
+                  class="btn btn-nav position-relative"
+                  type="button"
+                  id="notificationButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="fa-solid fa-bell"></i>
+                  <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    id="notificationCount"
+                  >
+                  </span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationButton" id="notificationList">
+                </ul>
+              </div>
+      
+              <!-- Buttons -->
+              <button class="btn btn-theme mx-1" id="themeSwitcher" type="button">
+                <i class="fas fa-sun"></i>
+              </button>
+              <button class="btn btn-nav mx-1" type="button" onclick="window.location.href = 'home.html'">Home</button>
+              <button class="btn btn-nav mx-1 active" type="button">About Us</button>
+              <button class="btn btn-nav mx-1" type="button" onclick="window.location.href = 'services.html'">Services</button>
+      
+              <!-- Dropdown per Entra -->
+              <div class="dropdown">
+                <button class="btn btn-nav mx-1" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                  Entra<i class="fa-solid fa-caret-down" style="margin-left: 5px"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <li><a class="dropdown-item" href="login.html">Accedi</a></li>
+                  <li><a class="dropdown-item" href="signup.html">Registrati</a></li>
+                </ul>
+              </div>
             </div>
+          </div>
         </div>
-    </nav>    
-
+      </nav>
+      
     <!--Inizio Content-->
     <div class="main-content">
         <main>

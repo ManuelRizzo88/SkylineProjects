@@ -366,18 +366,15 @@ app.post("/inviteToTeam", async (req, res) => {
     }
 
     // Verifica che il team esista
-    const teamExistsQuery = `SELECT * FROM Team WHERE IdTeam = $1`;
-    const teamExistsResult = await pool.query(teamExistsQuery, [teamId]);
-    if (teamExistsResult.rows.length === 0) {
+    const teamExistsResult = sql`SELECT * FROM Team WHERE IdTeam = ${teamId}`;
+    if (teamExistsResult.length === 0) {
       return res.status(404).send("Il team specificato non esiste.");
     }
 
-    // Inserisci l'invito nella tabella Invitations
-    const createInvitationQuery = `
+    await sql`
       INSERT INTO Invitations (IdTeam, IdUtente, Role)
-      VALUES ($1, $2, $3)
+      VALUES (${teamId}, ${userId}, ${role})
     `;
-    await pool.query(createInvitationQuery, [teamId, userId, role]);
 
     res.status(200).send("Invito inviato con successo!");
   } catch (error) {
@@ -396,30 +393,42 @@ app.post("/respondToInvitation", async (req, res) => {
     }
 
     // Ottieni i dettagli dell'invito
-    const getInvitationQuery = `SELECT * FROM Invitations WHERE Id = $1`;
-    const invitationResult = await pool.query(getInvitationQuery, [invitationId]);
+    const invitationResult = `SELECT * FROM Invitations WHERE Id = ${invitationId}`;
     if (invitationResult.length === 0) {
       return res.status(404).send("Invito non trovato.");
     }
 
-    const { idteam, idutente, role } = invitationResult.rows[0];
+    const { idteam, idutente, role } = invitationResult[0];
 
     if (response === "accepted") {
-      // Aggiungi l'utente alla tabella Teamers
-      const addUserToTeamQuery = `
+
+      await sql`
         INSERT INTO Teamers (IdTeam, IdUtente, Role)
-        VALUES ($1, $2, $3)
-      `;
-      await pool.query(addUserToTeamQuery, [idteam, idutente, role]);
+        VALUES (${idteam}, ${idutente}, ${role})
+      `
     }
 
-    // Elimina l'invito
-    const deleteInvitationQuery = `DELETE FROM Invitations WHERE Id = $1`;
-    await pool.query(deleteInvitationQuery, [invitationId]);
+    await sql`DELETE FROM Invitations WHERE Id = ${invitationId}`;
 
     res.status(200).send(`Invito ${response} con successo.`);
   } catch (error) {
     console.error("Errore durante la risposta all'invito:", error);
+    res.status(500).send("Errore del server.");
+  }
+});
+
+app.get("/getInvitations/:userid", async (req, res) => {
+  try {
+    const userId = req.params;
+    const invitations = await sql`
+      SELECT i.Id, t.TeamName, i.Role 
+      FROM Invitations i
+      JOIN Team t ON i.IdTeam = t.IdTeam
+      WHERE i.IdUtente = ${userId}
+    `;
+    res.json(invitations);
+  } catch (error) {
+    console.error("Errore nel recupero inviti:", error);
     res.status(500).send("Errore del server.");
   }
 });
