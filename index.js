@@ -43,7 +43,7 @@ app.get("/services", async (req, res) => {
   try {
     const result = await sql`SELECT idservizio,titolo, descrizione, prezzo, encode(image, 'base64') AS image, idvenditore FROM servizio`;
 
-    const services = result.rows.map(row => ({
+    const services = result.map(row => ({
       idservice: row.idservizio,
       title: row.titolo,
       description: row.descrizione,
@@ -354,10 +354,11 @@ app.post("/createTeam", async (req, res) => {
     console.log(teamResult)
     const teamId = teamResult[0].idteam;
 
+    const baseRole = "Owner"
     // Aggiungi l'utente come Owner del team nella tabella Teamers
     await sql`
       INSERT INTO Teamers (idteam, idutente, Role)
-      VALUES (${teamId}, ${userId}, "Owner")
+      VALUES (${teamId}, ${userId}, ${baseRole})
     `;
     
     res.status(201).json({
@@ -453,8 +454,8 @@ app.get("/getTeamMembers/:teamId", async (req, res) => {
       WHERE tm.IdTeam = ${teamId}
     `;
     
-    res.status(200).json(membersResult.rows); // Restituisce un array di membri
-    console.table(membersResult.rows)
+    res.status(200).json(membersResult); // Restituisce un array di membri
+    console.table(membersResult)
   } catch (error) {
     console.error("Errore nel recupero dei membri del team:", error);
     res.status(500).send("Errore del server.");
