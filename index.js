@@ -189,7 +189,6 @@ app.get("/getUserTeam/:userId", async (req, res) => {
 });
 
 app.get('/vendite-mensili/:venditoreId', async (req, res) => {
-  console.log("ricerca mensile")
   const venditoreId = req.params.venditoreId;
 
   try {
@@ -297,12 +296,6 @@ app.post('/orders', async (req, res) => {
   }
 
   try {
-      const query = `
-          INSERT INTO Ordine (Descrizione, Stato, Scadenza, IdVenditore, IdCliente, Prezzo, Fattura)
-          VALUES ($1, $2, $3, $4, $5, $6, $7)
-          RETURNING *;
-      `;
-
       const result = await sql`
           INSERT INTO Ordine (Descrizione, Stato, Scadenza, IdVenditore, IdCliente, Prezzo, Fattura)
           VALUES (${descrizione}, ${stato}, ${scadenza}, ${idVenditore}, ${idCliente}, ${prezzo}, null)
@@ -419,12 +412,13 @@ app.post("/respondToInvitation", async (req, res) => {
 
 app.get("/getInvitations/:userid", async (req, res) => {
   try {
-    const userId = req.params;
+    const userId = req.params.userid;
+
     const invitations = await sql`
-      SELECT i.Id, t.TeamName, i.Role 
+      SELECT i.IdInvitation, t.TeamName, i.Role 
       FROM Invitations i
       JOIN Team t ON i.IdTeam = t.IdTeam
-      WHERE i.IdUtente = ${userId}
+      WHERE i.idutente = ${userId}
     `;
     res.json(invitations);
   } catch (error) {
@@ -453,28 +447,6 @@ app.get("/getTeamMembers/:teamId", async (req, res) => {
     console.table(membersResult)
   } catch (error) {
     console.error("Errore nel recupero dei membri del team:", error);
-    res.status(500).send("Errore del server.");
-  }
-});
-
-app.get("/getNotifications/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    if (!userId) {
-      return res.status(400).send("userId è obbligatorio.");
-    }
-
-    const query = `
-      SELECT * 
-      FROM Notifications
-      WHERE IdUtente = $1 AND Status = 'unread'
-    `;
-    const result = await pool.query(query, [userId]);
-
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error("Errore durante il recupero delle notifiche:", error);
     res.status(500).send("Errore del server.");
   }
 });

@@ -2,8 +2,11 @@
 const themeSwitcher = document.getElementById("themeSwitcher");
 const body = document.body;
 const themeIcon = themeSwitcher.querySelector("i");
+const user = JSON.parse(localStorage.getItem("user"))
 
-document.addEventListener("DOMContentLoaded", notifiche)
+document.addEventListener("DOMContentLoaded", ()=>{
+  notifiche();
+});
 // Inizializzazione
 document.addEventListener("DOMContentLoaded", () => {
   setupNavbar();
@@ -215,12 +218,11 @@ async function signupfun(){
     const notificationCount = document.getElementById("notificationCount");
     const notificationList = document.getElementById("notificationList");
     
-    const userid = JSON.parse(localStorage.getItem("user").idu)
-    console.log(userid)
+    console.log(user)
 
     async function fetchNotifications() {
       try {
-        const response = await fetch(`/getInvitations/${userid}`);
+        const response = await fetch(`/getInvitations/${user.idu}`);
         if (!response.ok) {
           throw new Error("Errore nel recupero delle notifiche");
         }
