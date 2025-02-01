@@ -390,30 +390,37 @@ app.get("/users", async (req, res) => {
 
 app.post("/respondToInvitation", async (req, res) => {
   try {
+    console.log("Ricevuto corpo della richiesta:", req.body);
+
     const { invitationId, response } = req.body; // 'response' può essere 'accepted' o 'rejected'
 
-    // Verifica campi obbligatori
     if (!invitationId || !response) {
       return res.status(400).send("Tutti i campi sono obbligatori.");
     }
 
     // Ottieni i dettagli dell'invito
-    const invitationResult = `SELECT * FROM Invitations WHERE Id = ${invitationId}`;
+    const invitationResult = await sql`SELECT * FROM Invitations WHERE idinvitation = ${invitationId}`;
+    
+    console.log("Dati invito:", invitationResult); // Debug
+
     if (invitationResult.length === 0) {
       return res.status(404).send("Invito non trovato.");
     }
 
     const { idteam, idutente, role } = invitationResult[0];
 
-    if (response === "accepted") {
+    if (!idteam || !idutente || !role) {
+      return res.status(500).send("Errore: dati invito mancanti.");
+    }
 
+    if (response === "accepted") {
       await sql`
         INSERT INTO Teamers (IdTeam, IdUtente, Role)
         VALUES (${idteam}, ${idutente}, ${role})
-      `
+      `;
     }
 
-    await sql`DELETE FROM Invitations WHERE Id = ${invitationId}`;
+    await sql`DELETE FROM Invitations WHERE idinvitation = ${invitationId}`;
 
     res.status(200).send(`Invito ${response} con successo.`);
   } catch (error) {
@@ -421,6 +428,7 @@ app.post("/respondToInvitation", async (req, res) => {
     res.status(500).send("Errore del server.");
   }
 });
+
 
 app.get("/getInvitations/:userid", async (req, res) => {
   try {

@@ -217,76 +217,80 @@ async function signupfun(){
   function notifiche() {
     const notificationCount = document.getElementById("notificationCount");
     const notificationList = document.getElementById("notificationList");
-    
-    console.log(user)
+
+    console.log(user);
 
     async function fetchNotifications() {
-      try {
-        const response = await fetch(`/getInvitations/${user.idu}`);
-        if (!response.ok) {
-          throw new Error("Errore nel recupero delle notifiche");
+        try {
+            const response = await fetch(`/getInvitations/${user.idu}`);
+            if (!response.ok) {
+                throw new Error("Errore nel recupero delle notifiche");
+            }
+
+            const notifications = await response.json();
+            console.log(notifications);
+            updateNotifications(notifications);
+        } catch (error) {
+            console.error("Errore nel caricamento delle notifiche:", error);
         }
-  
-        const notifications = await response.json();
-        console.log(notifications)
-        updateNotifications(notifications);
-      } catch (error) {
-        console.error("Errore nel caricamento delle notifiche:", error);
-      }
     }
-  
+
     function updateNotifications(notifications) {
-      if (notifications.length == 0) {
-        notificationCount.style.display = "none";
-        notificationList.innerHTML = '<li class="dropdown-item text-muted">Nessuna notifica</li>';
-      } else {
-        notificationCount.style.display = "inline";
-        notificationCount.textContent = notifications.length;
-  
-        // Genera la lista delle notifiche
-        notificationList.innerHTML = notifications
-        .map(
-          notif => `
-            <li class="dropdown-item d-flex justify-content-between align-items-center">
-              <span>Entra in ${notif.teamname}</span>
-              <div class="d-flex gap-2">
-                <button class="btn btn-success btn-sm respond-invite" data-invite-id="${notif.idinvitation}" data-response="accepted">✅</button>
-                <button class="btn btn-danger btn-sm respond-invite" data-invite-id="${notif.idinvitation}" data-response="rejected">❌</button>
-              </div>
-            </li>`
-        )
-        .join("");
-      }
+        if (notifications.length === 0) {
+            notificationCount.style.display = "none";
+            notificationList.innerHTML = '<li class="dropdown-item text-muted">Nessuna notifica</li>';
+        } else {
+            notificationCount.style.display = "inline";
+            notificationCount.textContent = notifications.length;
+
+            // Genera la lista delle notifiche con i pulsanti di azione
+            notificationList.innerHTML = notifications
+                .map(
+                    notif => `
+                    <li class="dropdown-item d-flex justify-content-between align-items-center">
+                        <span>Entra in ${notif.teamname}</span>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-success btn-sm respond-invite" data-invite-id="${notif.idinvitation}" data-response="accepted">✅</button>
+                            <button class="btn btn-danger btn-sm respond-invite" data-invite-id="${notif.idinvitation}" data-response="rejected">❌</button>
+                        </div>
+                    </li>`
+                )
+                .join("");
+
+            // Aggiungi gli event listener ai pulsanti
+            document.querySelectorAll(".respond-invite").forEach(button => {
+                button.addEventListener("click", async (event) => {
+                    const invitationId = event.target.getAttribute("data-invite-id");
+                    const response = event.target.getAttribute("data-response");
+
+                    try {
+                        const res = await fetch("/respondToInvitation", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ invitationId, response }),
+                        });
+
+                        if (!res.ok) {
+                            throw new Error("Errore nella risposta all'invito");
+                        }
+
+                        const result = await res.text();
+                        console.log(result);
+
+                        // Aggiorna le notifiche dopo la risposta
+                        fetchNotifications();
+                    } catch (error) {
+                        console.error("Errore nell'invio della risposta all'invito:", error);
+                    }
+                });
+            });
+        }
     }
 
     fetchNotifications();
     setInterval(fetchNotifications, 10000);
-    
-  }
-
-  document.querySelectorAll(".respond-invite").forEach(button => {
-    button.addEventListener("click", function () {
-      handleInviteResponse(this.dataset.inviteId, this.dataset.response);
-    });
-  });
-
-// Funzione per inviare la risposta alla API
-async function handleInviteResponse(invitationId, response) {
-  try {
-    const res = await fetch("/respondToInvitation", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ invitationId, response })
-    });
-
-    const result = await res.text();
-    alert(result);
-    window.location.reload();
-  } catch (error) {
-    console.error("Errore nella risposta all'invito:", error);
-    alert("Errore durante l'operazione.");
-  }
 }
 
-  
 
