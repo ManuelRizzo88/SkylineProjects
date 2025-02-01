@@ -264,7 +264,7 @@ function renderTeam(members) {
       <td>${member.role}</td>
       <td>
             ${
-              member.role.toLowerCase() === "owner"
+              member.role.toLowerCase() === "owner"  || member.id === user.idu
                 ? ""
                 : `<button class="btn btn-danger btn-sm" onclick="removeMember(${member.id})">Rimuovi</button>`
             }
