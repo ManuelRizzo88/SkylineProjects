@@ -117,9 +117,7 @@
                   </thead>
                   <tbody id="team-members-table"></tbody>
                 </table>
-                <button id="add-member-btn" class="btn btn-success mt-3">
-                  Aggiungi Membro
-                </button>
+                <button id="openAddMemberModal" class="btn btn-success">Aggiungi Membro</button>
               </div>
             </div>
           </div>
@@ -158,6 +156,38 @@
             </div>
         </div>
     </div>
+    
+    <!-- Bottone per aprire il modal -->
+
+
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addMemberModalLabel">Aggiungi un Membro</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Input per la ricerca dell'utente -->
+        <input type="text" id="userSearch" class="form-control" placeholder="Cerca utente..." autocomplete="off">
+        
+        <!-- Dropdown con i risultati -->
+        <ul id="userDropdown" class="list-group position-absolute w-100" style="display: none; z-index: 1000;"></ul>
+
+        <!-- Input per il ruolo -->
+        <input type="text" id="roleInput" class="form-control mt-2" placeholder="Inserisci ruolo">
+
+        <!-- Messaggio di errore -->
+        <div id="errorMessage" class="text-danger mt-2" style="display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        <button id="addMemberBtn" class="btn btn-primary">Aggiungi Membro</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

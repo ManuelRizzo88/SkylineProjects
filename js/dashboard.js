@@ -1,3 +1,5 @@
+
+
 // Elementi DOM
 const noTeamSection = document.getElementById("no-team");
 const teamTableContainer = document.getElementById("team-section");
@@ -421,6 +423,119 @@ async function updateOrderStatus(orderId, newStatus) {
     alert("Errore: " + result.message);
   }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const userSearch = document.getElementById("userSearch");
+  const userDropdown = document.getElementById("userDropdown");
+  const roleInput = document.getElementById("roleInput");
+  const addMemberBtn = document.getElementById("addMemberBtn");
+  const errorMessage = document.getElementById("errorMessage");
+  const openAddMemberModal = document.getElementById("openAddMemberModal");
+
+  let selectedUserId = null;
+
+  // Apri il modal al click del bottone "Aggiungi Membro"
+  openAddMemberModal.addEventListener("click", function () {
+    const modal = new bootstrap.Modal(document.getElementById("addMemberModal"));
+    modal.show();
+  });
+
+  // Funzione per ottenere gli utenti dal server
+  async function fetchUsers(query) {
+    if (!query) {
+      userDropdown.style.display = "none";
+      return;
+    }
+
+    try {
+      const response = await fetch(`/users?search=${query}`);
+      if (!response.ok) throw new Error("Errore nel recupero degli utenti");
+
+      const users = await response.json();
+      updateDropdown(users);
+    } catch (error) {
+      console.error("Errore nel caricamento utenti:", error);
+    }
+  }
+
+  // Aggiorna il dropdown con gli utenti trovati
+  function updateDropdown(users) {
+    userDropdown.innerHTML = "";
+    if (users.length === 0) {
+      userDropdown.style.display = "none";
+      return;
+    }
+
+    users.forEach(user => {
+      const li = document.createElement("li");
+      li.textContent = user.name + " " + user.surname;
+      li.classList.add("list-group-item", "list-group-item-action");
+      li.dataset.userId = user.id;
+
+      li.addEventListener("click", () => {
+        userSearch.value = user.name;
+        selectedUserId = user.id;
+        userDropdown.style.display = "none";
+      });
+
+      userDropdown.appendChild(li);
+    });
+
+    userDropdown.style.display = "block";
+  }
+
+  // Ascolta l'input per filtrare gli utenti
+  userSearch.addEventListener("input", function () {
+    fetchUsers(this.value);
+  });
+
+  // Nasconde il dropdown se si clicca fuori
+  document.addEventListener("click", function (e) {
+    if (!userSearch.contains(e.target) && !userDropdown.contains(e.target)) {
+      userDropdown.style.display = "none";
+    }
+  });
+
+  // Invia la richiesta all'API quando si preme il bottone
+  addMemberBtn.addEventListener("click", async function () {
+    const team = JSON.parse(localStorage.getItem("team"))
+    const teamid = team.teamid
+    const role = roleInput.value.trim();
+
+    if (!selectedUserId || !role) {
+      errorMessage.textContent = "Seleziona un utente e inserisci un ruolo.";
+      errorMessage.style.display = "block";
+      return;
+    }
+
+    errorMessage.style.display = "none";
+
+    try {
+      const response = await fetch("/inviteToTeam", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamId:teamid, userId: selectedUserId, role:role }),
+      });
+
+      const result = await response.text();
+      alert(result);
+
+      // Chiudi il modal dopo l'invio
+      const modalElement = document.getElementById("addMemberModal");
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      modal.hide();
+
+      // Reset campi
+      userSearch.value = "";
+      roleInput.value = "";
+      selectedUserId = null;
+    } catch (error) {
+      console.error("Errore nell'invio dell'invito:", error);
+      alert("Errore nell'invio dell'invito.");
+    }
+  });
+});
+
 
 
 

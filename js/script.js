@@ -245,8 +245,17 @@ async function signupfun(){
   
         // Genera la lista delle notifiche
         notificationList.innerHTML = notifications
-          .map(notif => `<li><a class="dropdown-item" href="#">${notif.message}</a></li>`)
-          .join("");
+        .map(
+          notif => `
+            <li class="dropdown-item d-flex justify-content-between align-items-center">
+              <span>Entra in ${notif.teamname}</span>
+              <div class="d-flex gap-2">
+                <button class="btn btn-success btn-sm respond-invite" data-invite-id="${notif.idinvitation}" data-response="accepted">✅</button>
+                <button class="btn btn-danger btn-sm respond-invite" data-invite-id="${notif.idinvitation}" data-response="rejected">❌</button>
+              </div>
+            </li>`
+        )
+        .join("");
       }
     }
 
@@ -254,5 +263,30 @@ async function signupfun(){
     setInterval(fetchNotifications, 10000);
     
   }
+
+  document.querySelectorAll(".respond-invite").forEach(button => {
+    button.addEventListener("click", function () {
+      handleInviteResponse(this.dataset.inviteId, this.dataset.response);
+    });
+  });
+
+// Funzione per inviare la risposta alla API
+async function handleInviteResponse(invitationId, response) {
+  try {
+    const res = await fetch("/respondToInvitation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ invitationId, response })
+    });
+
+    const result = await res.text();
+    alert(result);
+    window.location.reload();
+  } catch (error) {
+    console.error("Errore nella risposta all'invito:", error);
+    alert("Errore durante l'operazione.");
+  }
+}
+
   
 

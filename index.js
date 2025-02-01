@@ -375,6 +375,18 @@ app.post("/inviteToTeam", async (req, res) => {
     res.status(500).send("Errore del server.");
   }
 });
+app.get("/users", async (req, res) => {
+  const search = req.query.search || "";
+  
+  const users = await sql`
+    SELECT idu AS id, name AS name, surname AS surname
+    FROM utente
+    WHERE name ILIKE ${"%" + search + "%"}
+    LIMIT 5
+  `;
+
+  res.json(users);
+});
 
 app.post("/respondToInvitation", async (req, res) => {
   try {
